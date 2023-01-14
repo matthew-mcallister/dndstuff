@@ -1,34 +1,38 @@
-import './App.css';
-import React, { useState } from 'react';
-import {generateStats} from './encounter';
+import './App.css'
+
+import React, { useState } from 'react'
+import {Npc, StatRange} from './npc'
+import NpcBox from './NpcBox'
 
 function App() {
-  const [stats, setStats] = useState<{[key: string]: number}>({})
+  const [npcs, setNpcs] = useState<Npc[]>([])
+
   function roll() {
-    setStats(generateStats({
-      Strength: {min: 8, max: 12},
-      Deftness: {min: 8, max: 12},
-      Speed: {min: 8, max: 12},
-      Health: {min: 8, max: 12},
-      Wit: {min: 8, max: 12},
-      Will: {min: 8, max: 12},
-    }));
+    const npc = Npc.generate({
+      Strength: new StatRange(8, 12),
+      Deftness: new StatRange(8, 12),
+      Speed: new StatRange(8, 12),
+      Health: new StatRange(8, 12),
+      Wit: new StatRange(8, 12),
+      Will: new StatRange(8, 12),
+    })
+    setNpcs([npc, ...npcs])
   }
+
   return (
     <div className="App">
-      <header className="App-header">
-        {Object.entries(stats).map(([key, value]) => {
-          return (
-            <p>
-              <label>{key}</label>:{' '}
-              <span>{value}</span>
-            </p>
-          );
-        })}
-        <button onClick={roll}>Roll</button>
-      </header>
+      <div className="layout">
+        <div className="left-panel">
+          <button onClick={roll}>Roll &#127922;</button>
+        </div>
+        <div className="right-panel">
+          <div className="npc-list">
+            {npcs.map((npc) => <NpcBox npc={npc}/>)}
+          </div>
+        </div>
+      </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
