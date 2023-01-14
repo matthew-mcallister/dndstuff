@@ -46,6 +46,17 @@ button {
   }
 }
 
+input {
+  width: 100px;
+  min-width: 60px;
+  color: $slate-900;
+  font-size: 16px;
+  background-color: $slate-300;
+  border-color: #00000000;
+  border-radius: 9999px;
+  padding: 8px 12px;
+}
+
 .npc-list {
   display: flex;
   flex-direction: column;

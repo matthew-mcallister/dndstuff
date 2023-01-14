@@ -1,10 +1,12 @@
 export type Stats = { [key: string]: number }
 
 export class StatRange {
+  public name: string;
   public min: number
   public max: number
 
-  constructor(min: number, max: number) {
+  constructor(name: string, min: number, max: number) {
+    this.name = name;
     this.min = min
     this.max = max
   }
@@ -14,8 +16,6 @@ export class StatRange {
   }
 }
 
-export type StatRanges = { [key: string]: StatRange }
-
 export class Npc {
   public stats: Stats
 
@@ -23,9 +23,9 @@ export class Npc {
     this.stats = stats
   }
 
-  static generate(ranges: StatRanges): Npc {
-    const stats = Object.fromEntries(Object.entries(ranges).map(([name, range]) => (
-      [name, range.generate()]
+  static generate(ranges: StatRange[]): Npc {
+    const stats = Object.fromEntries(ranges.map((range) => (
+      [range.name, range.generate()]
     )))
     return new Npc(stats)
   }
