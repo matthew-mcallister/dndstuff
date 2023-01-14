@@ -1,0 +1,21 @@
+@import './common.scss';
+
+.npc-box {
+  position: relative;
+  background-color: $slate-700;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.close-button {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  color: $slate-400;
+
+  &:hover {
+    color: $slate-500;
+  }
+}

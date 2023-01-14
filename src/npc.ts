@@ -5,8 +5,8 @@ export class StatRange {
   public max: number
 
   constructor(min: number, max: number) {
-    this.min = min;
-    this.max = max;
+    this.min = min
+    this.max = max
   }
 
   generate(): number {

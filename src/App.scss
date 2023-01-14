@@ -1,5 +1,7 @@
+@import './common.scss';
+
 body {
-  background-color: #1e293b;
+  background-color: $slate-800;
 }
 
 .App {
@@ -34,10 +36,14 @@ button {
   cursor: pointer;
   color: white;
   border-radius: 8px;
-  background-color: #64748b;
+  background-color: $slate-600;
   border-color: #00000000;
   padding: 8px 20px;
   font-size: 20px;
+
+  &:hover {
+    background-color: $slate-500;
+  }
 }
 
 .npc-list {

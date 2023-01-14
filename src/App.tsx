@@ -1,4 +1,4 @@
-import './App.css'
+import './App.scss'
 
 import React, { useState } from 'react'
 import {Npc, StatRange} from './npc'
@@ -7,7 +7,7 @@ import NpcBox from './NpcBox'
 function App() {
   const [npcs, setNpcs] = useState<Npc[]>([])
 
-  function roll() {
+  function roll(): void {
     const npc = Npc.generate({
       Strength: new StatRange(8, 12),
       Deftness: new StatRange(8, 12),
@@ -19,6 +19,11 @@ function App() {
     setNpcs([npc, ...npcs])
   }
 
+  function deleteNpc(index: number): void {
+    npcs.splice(index, 1);
+    setNpcs([...npcs]);
+  }
+
   return (
     <div className="App">
       <div className="layout">
@@ -27,7 +32,7 @@ function App() {
         </div>
         <div className="right-panel">
           <div className="npc-list">
-            {npcs.map((npc) => <NpcBox npc={npc}/>)}
+            {npcs.map((npc, i) => <NpcBox npc={npc} onClose={() => deleteNpc(i)}/>)}
           </div>
         </div>
       </div>
