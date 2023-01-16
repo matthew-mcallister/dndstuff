@@ -1,23 +1,18 @@
 import './App.scss'
 
 import React, { useState } from 'react'
-import { Npc, StatRange } from './npc'
 import NpcBox from './NpcBox'
-import StatInput from './StatInput';
+import { BushidoHuman, Profession } from './bushido'
+import { NumberInput, SelectInput } from './Input'
 
-function App() {
-  const [statRanges, setStatRanges] = useState<StatRange[]>([
-    new StatRange('Strength', 8, 12),
-    new StatRange('Deftness', 8, 12),
-    new StatRange('Speed', 8, 12),
-    new StatRange('Health', 8, 12),
-    new StatRange('Wit', 8, 12),
-    new StatRange('Will', 8, 12),
-  ]);
-  const [npcs, setNpcs] = useState<Npc[]>([])
+export default function App() {
+  const [npcs, setNpcs] = useState<string[]>([])
+  const [level, setLevel] = useState(1)
+  const [profession, setProfession] = useState<Profession | null>(null)
 
   function roll(): void {
-    const npc = Npc.generate(statRanges)
+    const x = BushidoHuman.generate(level, profession)
+    const npc = x.render()
     setNpcs([npc, ...npcs])
   }
 
@@ -26,36 +21,44 @@ function App() {
     setNpcs([...npcs])
   }
 
-  function updateStatRange(index: number, newRange: StatRange): void {
-    statRanges.splice(index, 1, newRange)
-    setStatRanges([...statRanges])
-  }
-
   return (
-    <div className="App">
-      <div className="layout">
-        <div className="left-panel">
+    <div className='App'>
+      <div className='layout'>
+        <div className='left-panel'>
           <div style={{ marginBottom: '16px' }}>
-            {statRanges.map((range, i) => <StatInput
-              key={'stat-input-' + i}
-              range={range}
-              onChange={(newRange) => updateStatRange(i, newRange)}
-            />)}
+            <NumberInput
+              label='Level'
+              value={level}
+              min={1}
+              onChange={setLevel}
+            />
+            <SelectInput
+              label='Profession'
+              value={profession}
+              options={[
+                { label: 'Bushi', value: 'Bushi' },
+                { label: 'Budoka', value: 'Budoka' },
+                { label: 'Ninja', value: 'Ninja' },
+                { label: 'Shugenja', value: 'Shugenja' },
+                { label: 'Gakusho', value: 'Gakusho' },
+                { label: 'Yakuza', value: 'Yakuza' },
+              ]}
+              // @ts-ignore
+              onChange={setProfession}
+            />
           </div>
           <button onClick={roll}>Roll &#127922;</button>
         </div>
-        <div className="right-panel">
-          <div className="npc-list">
-            {npcs.map((npc, i) => <NpcBox
-              key={'npc-' + i}
-              npc={npc}
-              onClose={() => deleteNpc(i)}
-            />)}
+        <div className='right-panel'>
+          <div className='npc-list'>
+            {npcs.map((npc, i) => (
+              <NpcBox key={'npc-' + i} onClose={() => deleteNpc(i)}>
+                {npc}
+              </NpcBox>
+            ))}
           </div>
         </div>
       </div>
     </div>
   )
 }
-
-export default App

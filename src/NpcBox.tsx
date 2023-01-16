@@ -1,23 +1,17 @@
 import './NpcBox.scss'
 
-import React from "react"
-import { Npc } from "./npc"
+import React from 'react'
 
-function NpcBox(props: {
-  npc: Npc
+export default function NpcBox(props: {
+  children?: React.ReactNode
   onClose?: () => void | Promise<void>
 }) {
   return (
-    <div className="npc-box">
-      {Object.entries(props.npc.stats).map(([name, value]) => (
-        <div>
-          <label>{name}</label>:{' '}
-          <span>{value}</span>
-        </div>
-      ))}
-      <div className="close-button" onClick={props.onClose}>✕</div>
+    <div className='npc-box'>
+      {props.children}
+      <div className='close-button' onClick={props.onClose}>
+        ✕
+      </div>
     </div>
   )
 }
-
-export default NpcBox
