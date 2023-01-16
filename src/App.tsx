@@ -9,9 +9,10 @@ export default function App() {
   const [npcs, setNpcs] = useState<string[]>([])
   const [level, setLevel] = useState(1)
   const [profession, setProfession] = useState<Profession | null>(null)
+  const archetype = 'Adventurer'
 
   function roll(): void {
-    const x = BushidoHuman.generate(level, profession)
+    const x = BushidoHuman.generate(level, archetype, profession)
     const npc = x.render()
     setNpcs([npc, ...npcs])
   }

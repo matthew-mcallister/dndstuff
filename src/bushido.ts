@@ -3,54 +3,74 @@
 import Handlebars from 'handlebars'
 import { d10, D20, d20, d3, d6 } from './common'
 
-export type Profession = 'Bushi'
-  | 'Budoka'
-  | 'Ninja'
-  | 'Shugenja'
-  | 'Gakusho'
-  | 'Yakuza'
+export const PROFESSIONS = [
+  'Bushi',
+  'Budoka',
+  'Ninja',
+  'Shugenja',
+  'Gakusho',
+  'Yakuza',
+] as const
+export type Profession = typeof PROFESSIONS[number]
+export type Archetype = 'Adventurer'
 export type Attitude = 'Unfavorable' | 'Neutral' | 'Favorable'
 
-export class Bugei {
-  atemi_waza: number = 0
-  bajutsu: number = 0
-  bojutsu: number = 0
-  chikujo_jutsu: number = 0
-  hayagakejutsu: number = 0
-  hojojutsu: number = 0
-  iaijutsu: number = 0
-  jittejutsu: number = 0
-  jojutsu: number = 0
-  jujutsu: number = 0
-  karumijutsu: number = 0
-  kenjutsu: number = 0
-  kiserujutsu: number = 0
-  kusari_jutsu: number = 0
-  kyujutsu: number = 0
-  masakarijutsu: number = 0
-  naginatajutsu: number = 0
-  ni_to_kenjutsu: number = 0
-  nunchaku_te: number = 0
-  onojutsu: number = 0
-  sai_te: number = 0
-  senjo_jutsu: number = 0
-  shinobi_jutsu: number = 0
-  shurikenjutsu: number = 0
-  sodegaramijutsu: number = 0
-  sojutsu: number = 0
-  suieijutsu: number = 0
-  sumai: number = 0
-  tantojutsu: number = 0
-  tessenjutsu: number = 0
-  tonfa_te: number = 0
-  two_weapon_bugei: number = 0
-  yadomejutsu: number = 0
-  yari_nage_jutsu: number = 0
+export const BUGEI = [
+  'atemi_waza',
+  'bajutsu',
+  'bojutsu',
+  'chikujo_jutsu',
+  'hayagakejutsu',
+  'hojojutsu',
+  'iaijutsu',
+  'jittejutsu',
+  'jojutsu',
+  'jujutsu',
+  'kamajutsu',
+  'karumijutsu',
+  'kenjutsu',
+  'kiserujutsu',
+  'kusari_jutsu',
+  'kyujutsu',
+  'masakarijutsu',
+  'naginatajutsu',
+  'ni_to_kenjutsu',
+  'nunchaku_te',
+  'onojutsu',
+  'sai_te',
+  'senjo_jutsu',
+  'shinobi_jutsu',
+  'shurikenjutsu',
+  'sodegaramijutsu',
+  'sojutsu',
+  'suieijutsu',
+  'sumai',
+  'tantojutsu',
+  'tessenjutsu',
+  'tonfa_te',
+  'yadomejutsu',
+  'yari_nage_jutsu',
+] as const
+export type Bugei = typeof BUGEI[number]
+export type Skill = Bugei
+// @ts-ignore
+export const SKILLS: Skill[] = BUGEI
+
+export type Inventory = Map<string, number>
+
+function skillToBcs(skill: number): number {
+  if (skill < 0 || skill > 100) console.error('Invalid skill level', skill)
+  if (skill == 0) return 0
+  if (skill > 95) return 19
+  // @ts-ignore
+  return Math.floor((skill - 1) / 5) + 1
 }
+Handlebars.registerHelper('skillToBcs', skillToBcs)
 
 export class BushidoHuman {
   level: number
   profession?: Profession
+  archetype: Archetype = 'Adventurer'
 
   attitudeRoll: D20 = 1
   attitude: Attitude = 'Neutral'
@@ -75,10 +95,14 @@ export class BushidoHuman {
   // with ki > 1
   ki: number = 1
 
-  bugei: Bugei = new Bugei()
+  initialSkills: Set<Skill> = new Set()
+  skills: Map<Skill, number> = new Map()
 
-  public constructor(level: number, profession?: Profession) {
+  inventory: Inventory = new Map()
+
+  public constructor(level: number, archetype?: Archetype, profession?: Profession) {
     this.level = level
+    this.archetype = archetype
     this.profession = profession
   }
 
@@ -196,19 +220,129 @@ export class BushidoHuman {
     }
   }
 
+  private generateInitialSkillValues(): Map<Skill, number> {
+    const skills = {
+      atemi_waza: this.strength + this.deftness + this.will,
+      bajutsu: 2 * this.will,
+      bojutsu: this.strength + this.deftness + this.will,
+      chikujo_jutsu: this.wit + this.will,
+      hayagakejutsu: this.health + this.will,
+      hojojutsu: this.speed + this.deftness,
+      iaijutsu: this.deftness + this.speed + this.will,
+      jittejutsu: this.deftness + this.speed + this.will,
+      jojutsu: this.deftness + this.will,
+      jujutsu: this.deftness + this.speed + this.will,
+      kamajutsu: this.strength + this.deftness + this.will,
+      karumijutsu: this.deftness + this.will,
+      kenjutsu: this.strength + this.deftness + this.will,
+      kiserujutsu: this.strength + this.deftness + this.will,
+      kusari_jutsu: this.strength + this.will + this.deftness,
+      kyujutsu: this.strength + this.deftness + this.will,
+      masakarijutsu: this.strength + this.deftness + this.will,
+      naginatajutsu: this.strength + this.deftness + this.will,
+      ni_to_kenjutsu: this.strength + this.deftness + this.will,
+      nunchaku_te: this.strength + this.deftness + this.will,
+      onojutsu: this.strength + this.deftness + this.will,
+      sai_te: this.strength + this.deftness + this.will,
+      senjo_jutsu: this.wit + this.will,
+      shinobi_jutsu: this.deftness + this.speed + this.wit,
+      shurikenjutsu: this.deftness + this.will,
+      sodegaramijutsu: this.strength + this.deftness + this.will,
+      sojutsu: this.strength + this.deftness + this.will,
+      suieijutsu: this.strength + this.health + this.will,
+      sumai: this.strength + this.deftness + this.will,
+      tantojutsu: this.strength + this.deftness + this.will,
+      tessenjutsu: this.deftness + this.speed + this.will,
+      tonfa_te: this.deftness + this.speed + this.will,
+      yadomejutsu: this.speed + this.will,
+      yari_nage_jutsu: this.deftness + this.will,
+    }
+    // @ts-ignore
+    return new Map(Object.entries(skills))
+  }
+
+  private generateInitialSkills(): void {
+    let initialSkills = this.initialSkills
+    function select(skill: Skill): void {
+      initialSkills.add(skill)
+    }
+    function selectRandom(choices: readonly Skill[]): void {
+      choices = choices.filter(choice => !initialSkills.has(choice))
+      if (!choices.length) return
+      const i = Math.floor(Math.random() * choices.length)
+      const skill = Array.from(choices)[i]
+      select(skill)
+    }
+
+    switch (this.profession) {
+    case 'Bushi':
+      select('kenjutsu')
+      select('kyujutsu')
+      selectRandom(BUGEI)
+      selectRandom(BUGEI)
+      break
+    case 'Budoka':
+      select('atemi_waza')
+      select('jujutsu')
+      selectRandom(BUGEI)
+      break
+    case 'Gakusho':
+      selectRandom(['bojutsu', 'jujutsu'])
+      break
+    case 'Shugenja':
+      selectRandom(BUGEI)
+      break
+    case 'Ninja':
+      select('kenjutsu')
+      selectRandom(['atemi_waza', 'jujutsu'])
+      selectRandom(BUGEI)
+      selectRandom(BUGEI)
+      break
+    case 'Yakuza':
+      select('sumai')
+      selectRandom(BUGEI)
+      break
+    default:
+    }
+  }
+
+  private generateSkills(): void {
+    const values = this.generateInitialSkillValues()
+    this.initialSkills.forEach(skill => {
+      this.skills.set(skill, values.get(skill))
+    })
+  }
+
+  private generateInventory(): void {
+  }
+
   private _generate(): void {
     this.generateAttitude()
     this.generateAttributes()
+    this.generateInitialSkills()
+    this.generateSkills()
+    this.generateInventory()
   }
 
-  public static generate(level: number, profession?: Profession): BushidoHuman {
-    const x = new BushidoHuman(level, profession);
-    x._generate();
-    return x;
+  public static generate(
+    level: number,
+    archetype?: Archetype,
+    profession?: Profession,
+  ): BushidoHuman {
+    const x = new BushidoHuman(level, archetype, profession)
+    x._generate()
+    return x
+  }
+
+  private skillsAsObject(): { [key: string]: number} {
+    return Object.fromEntries(this.skills)
   }
 
   public render(): string {
-    return renderHuman(this)
+    return renderHuman({
+      ...this,
+      skills: this.skillsAsObject(),
+    })
   }
 }
 
@@ -218,7 +352,7 @@ Level: {{level}}
 Profession: {{profession}}
 {{/if}}
 
-Attitude: {{attitude}} (roll {{attitudeRoll}})
+Attitude: {{attitude}} (rolled {{attitudeRoll}})
 Reaction bonus: {{reactionBonus}}
 
 Strength: {{strength}}
@@ -241,4 +375,109 @@ Leaping: {{leaping}}
 Swimming: {{swimming}}
 
 Ki: {{ki}}
+
+{{#with skills}}
+{{#if atemi_waza}}
+Atemi-waza: {{atemi_waza}} (BCS: {{skillToBcs atemi_waza}})
+{{/if}}
+{{#if bajutsu}}
+Bajutsu: {{bajutsu}} (BCS: {{skillToBcs bajutsu}})
+{{/if}}
+{{#if bojutsu}}
+Bojutsu: {{bojutsu}} (BCS: {{skillToBcs bojutsu}})
+{{/if}}
+{{#if chikujo_jutsu}}
+Chikujo-jutsu: {{chikujo_jutsu}} (BCS: {{skillToBcs chikujo_jutsu}})
+{{/if}}
+{{#if hayagakejutsu}}
+Hayagakejutsu: {{hayagakejutsu}} (BCS: {{skillToBcs hayagakejutsu}})
+{{/if}}
+{{#if hojojutsu}}
+Hojojutsu: {{hojojutsu}} (BCS: {{skillToBcs hojojutsu}})
+{{/if}}
+{{#if iaijutsu}}
+Iaijutsu: {{iaijutsu}} (BCS: {{skillToBcs iaijutsu}})
+{{/if}}
+{{#if jittejutsu}}
+Jittejutsu: {{jittejutsu}} (BCS: {{skillToBcs jittejutsu}})
+{{/if}}
+{{#if jojutsu}}
+Jojutsu: {{jojutsu}} (BCS: {{skillToBcs jojutsu}})
+{{/if}}
+{{#if jujutsu}}
+Jujutsu: {{jujutsu}} (BCS: {{skillToBcs jujutsu}})
+{{/if}}
+{{#if kamajutsu}}
+Kamajutsu: {{kamajutsu}} (BCS: {{skillToBcs kamajutsu}})
+{{/if}}
+{{#if karumijutsu}}
+Karumijutsu: {{karumijutsu}} (BCS: {{skillToBcs karumijutsu}})
+{{/if}}
+{{#if kenjutsu}}
+Kenjutsu: {{kenjutsu}} (BCS: {{skillToBcs kenjutsu}})
+{{/if}}
+{{#if kiserujutsu}}
+Kiserujutsu: {{kiserujutsu}} (BCS: {{skillToBcs kiserujutsu}})
+{{/if}}
+{{#if kusari_jutsu}}
+Kusari-jutsu: {{kusari_jutsu}} (BCS: {{skillToBcs kusari_jutsu}})
+{{/if}}
+{{#if kyujutsu}}
+Kyujutsu: {{kyujutsu}} (BCS: {{skillToBcs kyujutsu}})
+{{/if}}
+{{#if masakarijutsu}}
+Masakarijutsu: {{masakarijutsu}} (BCS: {{skillToBcs masakarijutsu}})
+{{/if}}
+{{#if naginatajutsu}}
+Naginatajutsu: {{naginatajutsu}} (BCS: {{skillToBcs naginatajutsu}})
+{{/if}}
+{{#if ni_to_kenjutsu}}
+Ni-to-kenjutsu: {{ni_to_kenjutsu}} (BCS: {{skillToBcs ni_to_kenjutsu}})
+{{/if}}
+{{#if nunchaku_te}}
+Nunchaku-te: {{nunchaku_te}} (BCS: {{skillToBcs nunchaku_te}})
+{{/if}}
+{{#if onojutsu}}
+Onojutsu: {{onojutsu}} (BCS: {{skillToBcs onojutsu}})
+{{/if}}
+{{#if sai_te}}
+Sai-te: {{sai_te}} (BCS: {{skillToBcs sai_te}})
+{{/if}}
+{{#if senjo_jutsu}}
+Senjo-jutsu: {{senjo_jutsu}} (BCS: {{skillToBcs senjo_jutsu}})
+{{/if}}
+{{#if shinobi_jutsu}}
+Shinobi-jutsu: {{shinobi_jutsu}} (BCS: {{skillToBcs shinobi_jutsu}})
+{{/if}}
+{{#if shurikenjutsu}}
+Shurikenjutsu: {{shurikenjutsu}} (BCS: {{skillToBcs shurikenjutsu}})
+{{/if}}
+{{#if sodegaramijutsu}}
+Sodegaramijutsu: {{sodegaramijutsu}} (BCS: {{skillToBcs sodegaramijutsu}})
+{{/if}}
+{{#if sojutsu}}
+Sojutsu: {{sojutsu}} (BCS: {{skillToBcs sojutsu}})
+{{/if}}
+{{#if suieijutsu}}
+Suieijutsu: {{suieijutsu}} (BCS: {{skillToBcs suieijutsu}})
+{{/if}}
+{{#if sumai}}
+Sumai: {{sumai}} (BCS: {{skillToBcs sumai}})
+{{/if}}
+{{#if tantojutsu}}
+Tantojutsu: {{tantojutsu}} (BCS: {{skillToBcs tantojutsu}})
+{{/if}}
+{{#if tessenjutsu}}
+Tessenjutsu: {{tessenjutsu}} (BCS: {{skillToBcs tessenjutsu}})
+{{/if}}
+{{#if tonfa_te}}
+Tonfa-te: {{tonfa_te}} (BCS: {{skillToBcs tonfa_te}})
+{{/if}}
+{{#if yadomejutsu}}
+Yari-nage-jutsu: {{yadomejutsu}} (BCS: {{skillToBcs yadomejutsu}})
+{{/if}}
+{{#if yari_nage_jutsu}}
+Yari-nage-jutsu: {{yari_nage_jutsu}} (BCS: {{skillToBcs yari_nage_jutsu}})
+{{/if}}
+{{/with}}
 `)
