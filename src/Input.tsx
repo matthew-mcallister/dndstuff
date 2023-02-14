@@ -32,7 +32,7 @@ export interface Option<V extends string> {
 
 export function SelectInput<V extends string>(props: {
   label: string
-  value: string
+  value: string | null
   options: Option<V>[]
   onChange?: (value: string) => void | Promise<void>
 }) {
@@ -44,10 +44,11 @@ export function SelectInput<V extends string>(props: {
       <select
         style={{ marginLeft: '8px' }}
         onChange={props.onChange ? e => props.onChange(e.target.value) : null}
+        value={props.value || ''}
       >
-        <option selected={!props.value}></option>
-        {props.options.map(({ label, value }) => (
-          <option value={value} selected={value == props.value}>
+        <option key='option-empty' value=''></option>
+        {props.options.map(({ label, value }, i) => (
+          <option key={`option-${i}`} value={value}>
             {label}
           </option>
         ))}
