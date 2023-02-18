@@ -11,13 +11,16 @@ export default function App() {
   const [level, setLevel] = useState(1)
   const [statTable, setStatTable] = useState<string | null>(null)
   const [skillTable, setSkillTable] = useState<string | null>(null)
+  const [itemTable1, setItemTable1] = useState<string | null>(null)
+  const [itemTable2, setItemTable2] = useState<string | null>(null)
 
   function roll(): void {
     if (!statTable || !skillTable) {
       alert('Must choose stat and skill table')
       return
     }
-    const x = BushidoHuman.generate(level, statTable, skillTable)
+    let items = [itemTable1, itemTable2].filter(x => x)
+    const x = BushidoHuman.generate(level, statTable, skillTable, items)
     const npc = x.render()
     setNpcs([npc, ...npcs])
   }
@@ -39,6 +42,7 @@ export default function App() {
   }
   const statTableOptions = keysAsOptions(tables.stats)
   const skillTableOptions = keysAsOptions(tables.initialSkills)
+  const itemTableOptions = keysAsOptions(tables.initialItems)
 
   return (
     <div className='App'>
@@ -66,6 +70,22 @@ export default function App() {
               options={skillTableOptions}
               // @ts-ignore
               onChange={setSkillTable}
+            />
+            <SelectInput
+              key='itemsel1'
+              label='Item table 1'
+              value={itemTable1}
+              options={itemTableOptions}
+              // @ts-ignore
+              onChange={setItemTable1}
+            />
+            <SelectInput
+              key='itemsel2'
+              label='Item table 2'
+              value={itemTable2}
+              options={itemTableOptions}
+              // @ts-ignore
+              onChange={setItemTable2}
             />
           </div>
           <button onClick={roll}>Roll &#127922;</button>

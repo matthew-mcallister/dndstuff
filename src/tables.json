@@ -213,31 +213,54 @@
     },
     "initialSkills": {
         "Bushi": [
-            ["kenjutsu"],
-            ["kyujutsu"],
-            "bugei",
-            "bugei"
+            "kenjutsu",
+            "kyujutsu",
+            { "setName": "bugei" },
+            { "setName": "bugei" }
         ],
         "Budoka": [
-            ["atemiWaza"],
-            ["jujutsu"],
-            "bugei"
+            "atemiWaza",
+            "jujutsu",
+            { "setName": "bugei" }
         ],
         "Gakusho": [
             ["bojutsu", "jujutsu"]
         ],
         "Shugenja": [
-            "bugei"
+            { "setName": "bugei" }
         ],
         "Ninja": [
-            ["kenjutsu"],
+            "kenjutsu",
             ["atemiWaza", "jujutsu"],
-            "bugei",
-            "bugei"
+            { "setName": "bugei" },
+            { "setName": "bugei" }
         ],
         "Yakuza": [
-            ["sumai"],
-            "bugei"
+            "sumai",
+            { "setName": "bugei" }
+        ]
+    },
+    "items": [
+        { "key": "daiKyu", "name": "Dai-kyu" },
+        { "key": "hanKyu", "name": "Han-kyu" },
+        { "key": "yanagiBa", "name": "Yanagi-ba" },
+        { "key": "togariYa", "name": "Togari-ya" },
+        { "key": "hikiMe", "name": "Hiki-me" }
+    ],
+    "initialItems": {
+        "Bushi": [
+            ["daiKyu", "hanKyu"],
+            { "oneOf": ["yanagiBa", "watakushi", "togariYa", "hikiMe"], "quantity": "4d6" },
+            "wakizashi",
+            [
+                "samuraiGarb",
+                "samuraiCourtClothes",
+                "partialLightSamuraiArmor",
+                "lightSamuraiArmor",
+                "partialHeavySamuraiArmor",
+                "completeLightSamuraiArmor",
+                "heavySamuraiArmor"
+            ]
         ]
     }
 }

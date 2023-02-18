@@ -1,6 +1,3 @@
-// TODO: Give a die to everything? Could theoretically replace bonus
-// stats with a D1.
-
 import Handlebars from 'handlebars'
 import { D20, d20, d } from './common'
 import tables from './tables'
@@ -30,6 +27,42 @@ function calculateStat(base: number, die: number, level: number): number {
 interface SkillValue {
   name: string
   value: number
+}
+
+interface InventoryItem {
+  key: string
+  name: string
+  quantity: number
+}
+
+// Converts a "camelCase" string to a "Title Case" string (with spaces)
+function keyToName(key: string): string {
+    key = key.charAt(0).toUpperCase() + key.substring(1)
+    return key.replace(/[A-Z]/g, (c) => ' ' + c)
+}
+
+function lookupItem(name: string): InventoryItem {
+  let item = tables.items[name]
+  if (!item) {
+    item = { key: name }
+  }
+
+  if (!item.name) {
+    item.name = keyToName(item.key)
+  }
+
+  item.quantity = 0
+
+  return item
+}
+
+function parseQuantity(qty: number | string): number {
+  if (typeof qty === 'string') {
+    const [n, m] = qty.split('d')
+    return d(Number(m), Number(n))
+  } else {
+    return qty
+  }
 }
 
 export class BushidoHuman {
@@ -118,9 +151,13 @@ export class BushidoHuman {
 
     for (const x of tables.initialSkills[tableName]) {
       if (typeof x === 'string') {
-        select(tables.skillSets[x])
-      } else {
+        select([x])
+      } else if (x instanceof Array) {
         select(x)
+      } else if (typeof x == 'object') {
+        select(tables.skillSets[x['setName']])
+      } else {
+        throw new Error('Invalid skill def: ' + x)
       }
     }
   }
@@ -132,24 +169,61 @@ export class BushidoHuman {
     })
   }
 
-  private generateInventory(): void {
+  private generateInventory(tableName: string): void {
+    const inventory = this.inventory;
+    function addItems(key: string, qty: number): void {
+      inventory.set(key, (inventory.get(key) || 0) + qty)
+    }
+    for (const x of tables.initialItems[tableName]) {
+      let choices = []
+      let quantity = 1
+      if (typeof x === 'string') {
+        choices = [x]
+      } else if (x instanceof Array) {
+        choices = x
+      } else if (typeof x == 'object') {
+        choices = x.oneOf
+        quantity = parseQuantity(x.quantity)
+      } else {
+        throw new Error('Invalid inventory def: ' + x)
+      }
+      let key
+      if (choices.length > 1) {
+        const i = Math.floor(Math.random() * choices.length)
+        key = Array.from(choices)[i]
+      } else {
+        key = choices[0]
+      }
+      addItems(key, quantity)
+    }
   }
 
-  private _generate(stats: string, initialSkills: string): void {
+  private _generate(
+    stats: string,
+    initialSkills: string,
+    items?: string | string[],
+  ): void {
     this.generateAttitude()
     this.generateAttributes(stats)
     this.generateInitialSkills(initialSkills)
     this.generateSkills()
-    this.generateInventory()
+    if (typeof items === 'string') {
+      this.generateInventory(items)
+    } else if (items instanceof Array) {
+      for (const table of items) {
+        this.generateInventory(table)
+      }
+    }
   }
 
   public static generate(
     level: number,
     stats: string,
     initialSkills: string,
+    items?: string | string[],
   ): BushidoHuman {
     const x = new BushidoHuman(level)
-    x._generate(stats, initialSkills)
+    x._generate(stats, initialSkills, items)
     return x
   }
 
@@ -164,10 +238,19 @@ export class BushidoHuman {
     })
   }
 
+  private inventoryList(): InventoryItem[] {
+    return Array.from(this.inventory.entries()).map(([k, v]) => {
+      const item = lookupItem(k)
+      item.quantity = v
+      return item
+    })
+  }
+
   public render(): string {
     return renderHuman({
       ...this,
       skills: this.skillList(),
+      inventory: this.inventoryList(),
     })
   }
 }
@@ -205,6 +288,12 @@ Ki: {{ki}}
 {{#each skills}}
 {{#if value}}
 {{name}}: {{value}} (BCS: {{skillToBcs value}})
+{{/if}}
+{{/each}}
+
+{{#each inventory}}
+{{#if quantity}}
+{{name}} x{{quantity}}
 {{/if}}
 {{/each}}
 `)
