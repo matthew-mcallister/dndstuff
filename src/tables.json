@@ -215,29 +215,29 @@
         "Bushi": [
             "kenjutsu",
             "kyujutsu",
-            { "setName": "bugei" },
-            { "setName": "bugei" }
+            { "oneOfSet": "bugei" },
+            { "oneOfSet": "bugei" }
         ],
         "Budoka": [
             "atemiWaza",
             "jujutsu",
-            { "setName": "bugei" }
+            { "oneOfSet": "bugei" }
         ],
         "Gakusho": [
             ["bojutsu", "jujutsu"]
         ],
         "Shugenja": [
-            { "setName": "bugei" }
+            { "oneOfSet": "bugei" }
         ],
         "Ninja": [
             "kenjutsu",
             ["atemiWaza", "jujutsu"],
-            { "setName": "bugei" },
-            { "setName": "bugei" }
+            { "oneOfSet": "bugei" },
+            { "oneOfSet": "bugei" }
         ],
         "Yakuza": [
             "sumai",
-            { "setName": "bugei" }
+            { "oneOfSet": "bugei" }
         ]
     },
     "items": [
@@ -249,9 +249,9 @@
     ],
     "initialItems": {
         "Bushi": [
+            { "special": "bugeiWeapons" },
             ["daiKyu", "hanKyu"],
             { "oneOf": ["yanagiBa", "watakushi", "togariYa", "hikiMe"], "quantity": "4d6" },
-            "wakizashi",
             [
                 "samuraiGarb",
                 "samuraiCourtClothes",
@@ -260,7 +260,29 @@
                 "partialHeavySamuraiArmor",
                 "completeLightSamuraiArmor",
                 "heavySamuraiArmor"
-            ]
+            ],
+            { "type": "wakizashi", "maxQuantity": 1 }
         ]
+    },
+    "bugeiWeapons": {
+        "tantojutsu": ["aiguchi", "tanto"],
+        "bojutsu": ["bo", "tetsubo"],
+        "sojutsu": ["fumataYari", "yari"],
+        "jittejutsu": "jitte",
+        "jojutsu": "jo",
+        "kamajutsu": "kama",
+        "kenjutsu": ["katana", "noDachi", "wakizashi"],
+        "kusariJutsu": ["kawaNaga", "kyotetsuShoge", "manrikigusari"],
+        "kiserujutsu": "kiseru",
+        "masakarijutsu": "masakari",
+        "naginatajutsu": ["nagamaki", "naginata"],
+        "atemiWaza": ["nekode", "shuko", "yawata"],
+        "onojutsu": "ono",
+        "saiTe": "sai",
+        "sodegaramijutsu": ["sasumata", "sodegarami"],
+        "shurikenjutsu": "shuriken",
+        "tessenjutsu": "tessen",
+        "tonfaTe": "tonfa",
+        "yariNageJutsu": ["uchiNe", "yariNage"]
     }
 }

@@ -1,13 +1,12 @@
 import _tables from './tables.json'
 
-interface Skill {
+export interface Skill {
     name: string
-    // TODO: key may be redundant
     key: string
     initialValue: string[]
 }
 
-type Attitude = [string, number]
+export type Attitude = [string, number]
 
 export interface StatTable {
   strength: number
@@ -32,7 +31,7 @@ export interface StatTable {
   powerDie?: number
 }
 
-interface SkillChoiceDef {
+export interface SkillChoiceDef {
   key?: string
   oneOf?: string[]
   setName?: string
@@ -40,23 +39,27 @@ interface SkillChoiceDef {
 
 // string = { "key": <value> }
 // string[] = { "oneOf": <value> }
-type SkillChoice = string | string[] | SkillChoiceDef
+export type SkillChoice = string | string[] | SkillChoiceDef
 
-interface ItemDef {
+export interface ItemDef {
   key: string
   // If undefined, name is generated from key
   name?: string
 }
 
-interface InventoryChoiceDef {
+export type ItemSpecial = 'bugeiWeapons'
+
+export interface InventoryChoiceDef {
   type?: string
   oneOf?: string[]
   // Quantity is either a number or a string of the form "XdY"
   quantity?: number | string
+  special?: ItemSpecial
+  maxQuantity?: number
 }
 
 // Similar to SkillChoice
-type InventoryChoice = string | string[] | InventoryChoiceDef
+export type InventoryChoice = string | string[] | InventoryChoiceDef
 
 interface Tables {
     skills: Skill[]
@@ -66,6 +69,7 @@ interface Tables {
     initialSkills: { [key: string]: SkillChoice[] }
     items: ItemDef[]
     initialItems: InventoryChoice[]
+    bugeiWeapons: { [key: string]: string | string[] }
 }
 
 // @ts-ignore

@@ -1,6 +1,6 @@
 import Handlebars from 'handlebars'
 import { D20, d20, d } from './common'
-import tables from './tables'
+import tables, { InventoryChoiceDef } from './tables'
 
 export type Inventory = Map<string, number>
 
@@ -150,12 +150,13 @@ export class BushidoHuman {
     }
 
     for (const x of tables.initialSkills[tableName]) {
+      // TODO: Require everything to be an object; this is too confusing
       if (typeof x === 'string') {
         select([x])
       } else if (x instanceof Array) {
         select(x)
       } else if (typeof x == 'object') {
-        select(tables.skillSets[x['setName']])
+        select(tables.skillSets[x['oneOfSet']])
       } else {
         throw new Error('Invalid skill def: ' + x)
       }
@@ -169,32 +170,68 @@ export class BushidoHuman {
     })
   }
 
-  private generateInventory(tableName: string): void {
-    const inventory = this.inventory;
-    function addItems(key: string, qty: number): void {
-      inventory.set(key, (inventory.get(key) || 0) + qty)
+  private applyItemSpecial(def: InventoryChoiceDef): InventoryChoiceDef[] {
+    if (!def.special) {
+      return [def]
     }
-    for (const x of tables.initialItems[tableName]) {
-      let choices = []
-      let quantity = 1
-      if (typeof x === 'string') {
-        choices = [x]
-      } else if (x instanceof Array) {
-        choices = x
-      } else if (typeof x == 'object') {
-        choices = x.oneOf
-        quantity = parseQuantity(x.quantity)
-      } else {
-        throw new Error('Invalid inventory def: ' + x)
+    if (def.special === 'bugeiWeapons') {
+      let defs = []
+      for (const bugei of tables.skillSets['bugei']) {
+        if (!this.initialSkills.has(bugei)) {
+          continue
+        }
+        let weapon = tables.bugeiWeapons[bugei]
+        if (!weapon) {
+          continue
+        }
+        if (typeof weapon === 'string') {
+          weapon = [weapon]
+        }
+        defs.push({ oneOf: weapon })
       }
-      let key
-      if (choices.length > 1) {
-        const i = Math.floor(Math.random() * choices.length)
-        key = Array.from(choices)[i]
-      } else {
-        key = choices[0]
+      return defs
+    } else {
+      throw new Error('Invalid special: ' + def.special)
+    }
+  }
+
+  private addItems(key: string, quantity: number, maxQuantity?: number): void {
+    const currentQuantity = this.inventory.get(key) || 0
+    let newQuantity = currentQuantity + quantity
+    if (maxQuantity) {
+      newQuantity = Math.min(newQuantity, maxQuantity)
+    }
+    this.inventory.set(key, newQuantity)
+  }
+
+  private processRegularItem(def: InventoryChoiceDef) {
+    let choices = []
+    let quantity = 1
+    if (typeof def === 'string') {
+      choices = [def]
+    } else if (def instanceof Array) {
+      choices = def
+    } else if (typeof def == 'object') {
+      choices = def.oneOf || [def.type]
+      quantity = parseQuantity(def.quantity || 1)
+    } else {
+      throw new Error('Invalid inventory def: ' + def)
+    }
+    let key
+    if (choices.length > 1) {
+      const i = Math.floor(Math.random() * choices.length)
+      key = Array.from(choices)[i]
+    } else {
+      key = choices[0]
+    }
+    this.addItems(key, quantity, def.maxQuantity)
+  }
+
+  private generateInventory(tableName: string): void {
+    for (const origDef of tables.initialItems[tableName]) {
+      for (const subDef of this.applyItemSpecial(origDef)) {
+        this.processRegularItem(subDef)
       }
-      addItems(key, quantity)
     }
   }
 
