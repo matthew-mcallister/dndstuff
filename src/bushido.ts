@@ -186,7 +186,7 @@ export class BushidoHuman {
         if (typeof weapon === 'string') {
           weapon = [weapon]
         }
-        defs.push({ oneOf: weapon })
+        defs.push({ oneOf: weapon, dedupe: true })
       }
       return defs
     } else {
@@ -203,16 +203,26 @@ export class BushidoHuman {
     this.inventory.set(key, newQuantity)
   }
 
-  private processRegularItem(def: InventoryChoiceDef) {
+  private processRegularItem(def: InventoryChoiceDef): void {
     let choices = def.oneOf || [def.type]
+    if (def.dedupe) {
+      // XXX: This assumes that all keys have quantity > 0
+      const heldItems = new Set(this.inventory.keys())
+      choices = choices.filter((choice) => !heldItems.has(choice))
+    }
+
     let quantity = parseQuantity(def.quantity || 1)
+
     let key
     if (choices.length > 1) {
       const i = Math.floor(Math.random() * choices.length)
       key = Array.from(choices)[i]
-    } else {
+    } else if (choices.length === 1) {
       key = choices[0]
+    } else {
+      return
     }
+
     this.addItems(key, quantity, def.maxQuantity)
   }
 
@@ -253,6 +263,7 @@ export class BushidoHuman {
     return x
   }
 
+  // TODO: Sort alphabetically
   private skillList(): SkillValue[] {
     return Array.from(this.skills.entries()).map(([k, v]) => {
       const skill = tables.skills.find(s => s.key === k)
@@ -264,6 +275,7 @@ export class BushidoHuman {
     })
   }
 
+  // TODO: Sort alphabetically and hide x1
   private inventoryList(): InventoryItem[] {
     return Array.from(this.inventory.entries()).map(([k, v]) => {
       const item = lookupItem(k)

@@ -52,6 +52,7 @@ export interface InventoryChoiceDef {
   quantity?: number | string
   special?: ItemSpecial
   maxQuantity?: number
+  dedupe?: boolean
 }
 
 interface Tables {

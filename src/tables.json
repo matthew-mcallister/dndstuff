@@ -261,7 +261,17 @@
                 "completeLightSamuraiArmor",
                 "heavySamuraiArmor"
             ] },
-            { "type": "wakizashi", "maxQuantity": 1 }
+            { "type": "wakizashi", "dedupe": true }
+        ],
+        "Budoka": [
+            { "special": "bugeiWeapons" }
+        ],
+        "Gakusho": [
+            { "type": "clericalGarb" },
+            { "type": "bo" }
+        ],
+        "Shugenja": [
+            { "special": "bugeiWeapons" }
         ]
     },
     "bugeiWeapons": {
