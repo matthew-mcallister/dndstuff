@@ -213,31 +213,31 @@
     },
     "initialSkills": {
         "Bushi": [
-            "kenjutsu",
-            "kyujutsu",
-            { "oneOfSet": "bugei" },
-            { "oneOfSet": "bugei" }
+            { "key": "kenjutsu" },
+            { "key": "kyujutsu" },
+            { "fromSet": "bugei" },
+            { "fromSet": "bugei" }
         ],
         "Budoka": [
-            "atemiWaza",
-            "jujutsu",
-            { "oneOfSet": "bugei" }
+            { "key": "atemiWaza" },
+            { "key": "jujutsu" },
+            { "fromSet": "bugei" }
         ],
         "Gakusho": [
-            ["bojutsu", "jujutsu"]
+            { "oneOf": ["bojutsu", "jujutsu"] }
         ],
         "Shugenja": [
-            { "oneOfSet": "bugei" }
+            { "fromSet": "bugei" }
         ],
         "Ninja": [
-            "kenjutsu",
-            ["atemiWaza", "jujutsu"],
-            { "oneOfSet": "bugei" },
-            { "oneOfSet": "bugei" }
+            { "key": "kenjutsu" },
+            { "oneOf": ["atemiWaza", "jujutsu"] },
+            { "fromSet": "bugei" },
+            { "fromSet": "bugei" }
         ],
         "Yakuza": [
-            "sumai",
-            { "oneOfSet": "bugei" }
+            { "key": "sumai" },
+            { "fromSet": "bugei" }
         ]
     },
     "items": [
@@ -250,9 +250,9 @@
     "initialItems": {
         "Bushi": [
             { "special": "bugeiWeapons" },
-            ["daiKyu", "hanKyu"],
+            { "oneOf": ["daiKyu", "hanKyu"] },
             { "oneOf": ["yanagiBa", "watakushi", "togariYa", "hikiMe"], "quantity": "4d6" },
-            [
+            { "oneOf": [
                 "samuraiGarb",
                 "samuraiCourtClothes",
                 "partialLightSamuraiArmor",
@@ -260,7 +260,7 @@
                 "partialHeavySamuraiArmor",
                 "completeLightSamuraiArmor",
                 "heavySamuraiArmor"
-            ],
+            ] },
             { "type": "wakizashi", "maxQuantity": 1 }
         ]
     },
@@ -268,21 +268,21 @@
         "tantojutsu": ["aiguchi", "tanto"],
         "bojutsu": ["bo", "tetsubo"],
         "sojutsu": ["fumataYari", "yari"],
-        "jittejutsu": "jitte",
-        "jojutsu": "jo",
-        "kamajutsu": "kama",
+        "jittejutsu": ["jitte"],
+        "jojutsu": ["jo"],
+        "kamajutsu": ["kama"],
         "kenjutsu": ["katana", "noDachi", "wakizashi"],
         "kusariJutsu": ["kawaNaga", "kyotetsuShoge", "manrikigusari"],
-        "kiserujutsu": "kiseru",
-        "masakarijutsu": "masakari",
+        "kiserujutsu": ["kiseru"],
+        "masakarijutsu": ["masakari"],
         "naginatajutsu": ["nagamaki", "naginata"],
         "atemiWaza": ["nekode", "shuko", "yawata"],
-        "onojutsu": "ono",
-        "saiTe": "sai",
+        "onojutsu": ["ono"],
+        "saiTe": ["sai"],
         "sodegaramijutsu": ["sasumata", "sodegarami"],
-        "shurikenjutsu": "shuriken",
-        "tessenjutsu": "tessen",
-        "tonfaTe": "tonfa",
+        "shurikenjutsu": ["shuriken"],
+        "tessenjutsu": ["tessen"],
+        "tonfaTe": ["tonfa"],
         "yariNageJutsu": ["uchiNe", "yariNage"]
     }
 }

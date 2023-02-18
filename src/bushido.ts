@@ -149,16 +149,15 @@ export class BushidoHuman {
       initialSkills.add(skill)
     }
 
-    for (const x of tables.initialSkills[tableName]) {
-      // TODO: Require everything to be an object; this is too confusing
-      if (typeof x === 'string') {
-        select([x])
-      } else if (x instanceof Array) {
-        select(x)
-      } else if (typeof x == 'object') {
-        select(tables.skillSets[x['oneOfSet']])
+    for (const def of tables.initialSkills[tableName]) {
+      if (def.key) {
+        select([def.key])
+      } else if (def.oneOf) {
+        select(def.oneOf)
+      } else if (def.fromSet) {
+        select(tables.skillSets[def.fromSet])
       } else {
-        throw new Error('Invalid skill def: ' + x)
+        throw new Error('invalid skill def: ' + def)
       }
     }
   }
@@ -205,18 +204,8 @@ export class BushidoHuman {
   }
 
   private processRegularItem(def: InventoryChoiceDef) {
-    let choices = []
-    let quantity = 1
-    if (typeof def === 'string') {
-      choices = [def]
-    } else if (def instanceof Array) {
-      choices = def
-    } else if (typeof def == 'object') {
-      choices = def.oneOf || [def.type]
-      quantity = parseQuantity(def.quantity || 1)
-    } else {
-      throw new Error('Invalid inventory def: ' + def)
-    }
+    let choices = def.oneOf || [def.type]
+    let quantity = parseQuantity(def.quantity || 1)
     let key
     if (choices.length > 1) {
       const i = Math.floor(Math.random() * choices.length)

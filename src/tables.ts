@@ -34,12 +34,8 @@ export interface StatTable {
 export interface SkillChoiceDef {
   key?: string
   oneOf?: string[]
-  setName?: string
+  fromSet?: string
 }
-
-// string = { "key": <value> }
-// string[] = { "oneOf": <value> }
-export type SkillChoice = string | string[] | SkillChoiceDef
 
 export interface ItemDef {
   key: string
@@ -58,18 +54,15 @@ export interface InventoryChoiceDef {
   maxQuantity?: number
 }
 
-// Similar to SkillChoice
-export type InventoryChoice = string | string[] | InventoryChoiceDef
-
 interface Tables {
     skills: Skill[]
     skillSets: { [key: string]: string[] }
     attitudes: Attitude[]
     stats: { [key: string]: StatTable }
-    initialSkills: { [key: string]: SkillChoice[] }
+    initialSkills: { [key: string]: SkillChoiceDef[] }
     items: ItemDef[]
-    initialItems: InventoryChoice[]
-    bugeiWeapons: { [key: string]: string | string[] }
+    initialItems: InventoryChoiceDef[]
+    bugeiWeapons: { [key: string]: string[] }
 }
 
 // @ts-ignore
