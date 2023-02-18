@@ -271,7 +271,22 @@
             { "type": "bo" }
         ],
         "Shugenja": [
-            { "special": "bugeiWeapons" }
+            { "special": "bugeiWeapons" },
+            { "type": "bo" }
+        ],
+        "Ninja": [
+            { "special": "bugeiWeapons" },
+            { "type": "katana", "dedupe": true },
+            { "oneOf": [
+                "ninjaGarb",
+                "partialNinjaArmor",
+                "ninjaArmor",
+                "completeNinjaArmor"
+            ] }
+        ],
+        "Yakuza": [
+            { "special": "bugeiWeapons" },
+            { "type": "dice" }
         ]
     },
     "bugeiWeapons": {
@@ -286,6 +301,7 @@
         "kiserujutsu": ["kiseru"],
         "masakarijutsu": ["masakari"],
         "naginatajutsu": ["nagamaki", "naginata"],
+        "nunchakuTe": ["nunchaku"],
         "atemiWaza": ["nekode", "shuko", "yawata"],
         "onojutsu": ["ono"],
         "saiTe": ["sai"],
