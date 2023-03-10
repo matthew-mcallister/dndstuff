@@ -1,10 +1,10 @@
 import './App.scss'
 
 import React, { useState } from 'react'
-import NpcBox from './NpcBox'
-import { BushidoHuman } from './bushido'
-import { NumberInput, SelectInput } from './Input'
-import tables from './tables'
+import NpcBox from '../NpcBox'
+import { BushidoHuman } from '../bushido'
+import { NumberInput, SelectInput } from '../Input'
+import tables from '../tables'
 
 export default function App() {
   const [npcIds, setNpcIds_] = useState<string[]>(

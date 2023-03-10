@@ -1,0 +1,32 @@
+@import '../common.scss';
+
+.NpcSheet {
+  color: white;
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto;
+
+  h4 {
+    margin: 0.5rem 0;
+  }
+}
+
+.GridCell {
+  height: 5rem;
+  padding: 0.5rem 1rem;
+}
+
+.BigBox {
+  padding: 0.5rem 1rem;
+  height: 8rem;
+  grid-column-start: 1;
+  grid-column-end: 7;
+  margin-bottom: 0.5rem;
+}
+
+.Alt {
+  background-color: $slate-700;
+}
+
+.Stat {
+  font-size: xx-large;
+}
