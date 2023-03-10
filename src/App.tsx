@@ -7,12 +7,19 @@ import { NumberInput, SelectInput } from './Input'
 import tables from './tables'
 
 export default function App() {
-  const [npcs, setNpcs] = useState<string[]>([])
+  const [npcIds, setNpcIds_] = useState<string[]>(
+    JSON.parse(localStorage.getItem('npcIds')) || []
+  )
   const [level, setLevel] = useState(1)
   const [statTable, setStatTable] = useState<string | null>(null)
   const [skillTable, setSkillTable] = useState<string | null>(null)
   const [itemTable1, setItemTable1] = useState<string | null>(null)
   const [itemTable2, setItemTable2] = useState<string | null>(null)
+
+  function setNpcIds(ids: string[]): void {
+    setNpcIds_(ids)
+    localStorage.setItem('npcIds', JSON.stringify(ids))
+  }
 
   function roll(): void {
     if (!statTable || !skillTable) {
@@ -21,13 +28,14 @@ export default function App() {
     }
     let items = [itemTable1, itemTable2].filter(x => x)
     const x = BushidoHuman.generate(level, statTable, skillTable, items)
-    const npc = x.render()
-    setNpcs([npc, ...npcs])
+    const key = `npc:${crypto.randomUUID()}`
+    localStorage.setItem(key, JSON.stringify(x.toNpc()))
+    setNpcIds([key, ...npcIds])
   }
 
   function deleteNpc(index: number): void {
-    npcs.splice(index, 1)
-    setNpcs([...npcs])
+    npcIds.splice(index, 1)
+    setNpcIds([...npcIds])
   }
 
   type Option<T> = {
@@ -92,10 +100,12 @@ export default function App() {
         </div>
         <div className='right-panel'>
           <div className='npc-list'>
-            {npcs.map((npc, i) => (
-              <NpcBox key={'npc-' + i} onClose={() => deleteNpc(i)}>
-                {npc}
-              </NpcBox>
+            {npcIds.map((npcId, i) => (
+              <NpcBox
+                key={'npc-' + i}
+                onClose={() => deleteNpc(i)}
+                npcId={npcId}
+              />
             ))}
           </div>
         </div>

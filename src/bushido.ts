@@ -1,18 +1,8 @@
-import Handlebars from 'handlebars'
 import { D20, d20, d } from './common'
 import tables, { InventoryChoiceDef } from './tables'
+import Npc from './Npc'
 
 export type Inventory = Map<string, number>
-
-function skillToBcs(skill: number): number {
-  if (skill < 0 || skill > 100) console.error('Invalid skill level', skill)
-  if (skill === 0) return 0
-  if (skill > 95) return 19
-  // @ts-ignore
-  return Math.floor((skill - 1) / 5) + 1
-}
-
-Handlebars.registerHelper('skillToBcs', skillToBcs)
 
 function calculateStat(base: number, die: number, level: number): number {
   if (die === 0) {
@@ -22,38 +12,6 @@ function calculateStat(base: number, die: number, level: number): number {
   } else {
     return base + d(die, level)
   }
-}
-
-interface SkillValue {
-  name: string
-  value: number
-}
-
-interface InventoryItem {
-  key: string
-  name: string
-  quantity: number
-}
-
-// Converts a "camelCase" string to a "Title Case" string (with spaces)
-function keyToName(key: string): string {
-    key = key.charAt(0).toUpperCase() + key.substring(1)
-    return key.replace(/[A-Z]/g, (c) => ' ' + c)
-}
-
-function lookupItem(name: string): InventoryItem {
-  let item = tables.items[name]
-  if (!item) {
-    item = { key: name }
-  }
-
-  if (!item.name) {
-    item.name = keyToName(item.key)
-  }
-
-  item.quantity = 0
-
-  return item
 }
 
 function parseQuantity(qty: number | string): number {
@@ -98,6 +56,14 @@ export class BushidoHuman {
 
   public constructor(level: number) {
     this.level = level
+  }
+
+  public toNpc(): Npc {
+    let npc = new Npc()
+    Object.assign(npc, this)
+    npc.skills = Object.fromEntries(this.skills.entries())
+    npc.inventory = Object.fromEntries(this.inventory.entries())
+    return npc
   }
 
   private generateAttitude(): void {
@@ -262,76 +228,4 @@ export class BushidoHuman {
     x._generate(stats, initialSkills, items)
     return x
   }
-
-  // TODO: Sort alphabetically
-  private skillList(): SkillValue[] {
-    return Array.from(this.skills.entries()).map(([k, v]) => {
-      const skill = tables.skills.find(s => s.key === k)
-      if (!skill) throw new Error(`Invalid skill: ${k}`)
-      return {
-        name: skill.name,
-        value: v,
-      }
-    })
-  }
-
-  // TODO: Sort alphabetically and hide x1
-  private inventoryList(): InventoryItem[] {
-    return Array.from(this.inventory.entries()).map(([k, v]) => {
-      const item = lookupItem(k)
-      item.quantity = v
-      return item
-    })
-  }
-
-  public render(): string {
-    return renderHuman({
-      ...this,
-      skills: this.skillList(),
-      inventory: this.inventoryList(),
-    })
-  }
 }
-
-const renderHuman = Handlebars.compile(`\
-Level: {{level}}
-{{#if profession}}
-Profession: {{profession}}
-{{/if}}
-
-Attitude: {{attitude}} (rolled {{attitudeRoll}})
-Reaction bonus: {{reactionBonus}}
-
-Strength: {{strength}}
-Deftness: {{deftness}}
-Speed: {{speed}}
-Health: {{health}}
-Wit: {{wit}}
-Will: {{will}}
-Hitpoints: {{hitpoints}}
-{{#if magic}}
-Magic: {{magic}}
-{{/if}}
-{{#if power}}
-Power: {{power}}
-{{/if}}
-
-Brawling: {{brawling}}
-Climbing: {{climbing}}
-Leaping: {{leaping}}
-Swimming: {{swimming}}
-
-Ki: {{ki}}
-
-{{#each skills}}
-{{#if value}}
-{{name}}: {{value}} (BCS: {{skillToBcs value}})
-{{/if}}
-{{/each}}
-
-{{#each inventory}}
-{{#if quantity}}
-{{name}} x{{quantity}}
-{{/if}}
-{{/each}}
-`)
