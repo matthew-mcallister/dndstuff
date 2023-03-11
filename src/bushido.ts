@@ -23,6 +23,7 @@ function parseQuantity(qty: number | string): number {
   }
 }
 
+// TODO: Inherit from Npc class
 export class BushidoHuman {
   level: number
 
@@ -45,13 +46,19 @@ export class BushidoHuman {
   leaping: number = 0
   swimming: number = 0
 
-  // Currently I don't think there's any way to randomly generate an NPC
-  // with ki > 1
+  // I don't think there's any way in the rulebook randomly generate an
+  // NPC with ki > 1
   ki: number = 1
 
+  maxNumberActions: number = 0
+  baseActionPhase: number = 0
+  secondaryActionPhase1: number = 0
+  secondaryActionPhase2: number = 0
+  baseMovementAllowance: number = 0
+
+  // TODO: Rename with underscores to avoid Npc field name conflict
   initialSkills: Set<string> = new Set()
   skills: Map<string, number> = new Map()
-
   inventory: Inventory = new Map()
 
   public constructor(level: number) {
@@ -90,6 +97,16 @@ export class BushidoHuman {
     this.swimming = calculateStat(table.swimming, table.swimmingDie || 0, this.level)
     this.magic = calculateStat(table.magic || 0, table.magicDie || 0, this.level)
     this.power = calculateStat(table.power || 0, table.powerDie || 0, this.level)
+
+    this.maxNumberActions = Math.floor(this.speed / 10)
+    this.baseActionPhase = Math.floor(this.deftness / 2)
+    if (this.maxNumberActions > 1) {
+      this.secondaryActionPhase1 = Math.floor(this.baseActionPhase / 2)
+    }
+    if (this.maxNumberActions > 2) {
+      this.secondaryActionPhase2 = Math.floor(this.baseActionPhase / 3)
+    }
+    this.baseMovementAllowance = Math.floor(this.speed / 3)
   }
 
   private generateInitialSkillValues(): Map<string, number> {

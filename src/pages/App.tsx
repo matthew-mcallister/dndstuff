@@ -104,6 +104,10 @@ export default function App() {
               <NpcBox
                 key={'npc-' + i}
                 onClose={() => deleteNpc(i)}
+                onExpand={() => {
+                  const id = npcId.split(':')[1]
+                  window.open(`/npcs/${id}`, '_blank')
+                }}
                 npcId={npcId}
               />
             ))}

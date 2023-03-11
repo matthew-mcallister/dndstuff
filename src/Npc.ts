@@ -68,10 +68,14 @@ export default class Npc {
 
   ki: number = 1
 
+  maxNumberActions: number = 0
+  baseActionPhase: number = 0
+  secondaryActionPhase1: number = 0
+  secondaryActionPhase2: number = 0
+  baseMovementAllowance: number = 0
+
   skills: { [key: string]: number } = {}
   inventory: { [key: string]: number } = {}
-
-  constructor() {}
 
   // TODO: Sort alphabetically
   private skillList(): SkillValue[] {
@@ -132,6 +136,15 @@ Leaping: {{leaping}}
 Swimming: {{swimming}}
 
 Ki: {{ki}}
+
+Base action phase: {{baseActionPhase}}
+{{#if secondaryActionPhase1}}
+Secondary action phase: {{secondaryActionPhase1}}
+{{/if}}
+{{#if secondaryActionPhase2}}
+Secondary action phase: {{secondaryActionPhase2}}
+{{/if}}
+Base movement allowance: {{baseMovementAllowance}}
 
 {{#each skills}}
 {{#if value}}

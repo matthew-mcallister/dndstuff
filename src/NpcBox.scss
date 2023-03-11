@@ -8,10 +8,13 @@
   padding: 16px;
 }
 
-.close-button {
+.box-buttons {
   position: absolute;
   top: 8px;
   right: 12px;
+}
+
+.button-icon {
   cursor: pointer;
   font-weight: bold;
   color: $slate-400;
