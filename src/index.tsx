@@ -1,13 +1,13 @@
 import './index.css'
 
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 
 import Routes from './Routes'
 
-ReactDOM.render(
+const root = createRoot(document.getElementById('root'))
+root.render(
   <React.StrictMode>
     <Routes />
   </React.StrictMode>,
-  document.getElementById('root')
 )

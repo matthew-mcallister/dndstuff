@@ -41,6 +41,7 @@ export interface ItemDef {
   key: string
   // If undefined, name is generated from key
   name?: string
+  damage?: string
 }
 
 export type ItemSpecial = 'bugeiWeapons'

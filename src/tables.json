@@ -241,11 +241,172 @@
         ]
     },
     "items": [
-        { "key": "daiKyu", "name": "Dai-kyu" },
-        { "key": "hanKyu", "name": "Han-kyu" },
-        { "key": "yanagiBa", "name": "Yanagi-ba" },
-        { "key": "togariYa", "name": "Togari-ya" },
-        { "key": "hikiMe", "name": "Hiki-me" }
+        {
+            "key": "aiguchi",
+            "damage": "1d3"
+        },
+        {
+            "key": "bo",
+            "damage": "1d6"
+        },
+        {
+            "key": "clube",
+            "damage": "1d3+1"
+        },
+        {
+            "key": "fumataYari",
+            "name": "Fumata-yari",
+            "damage": "1d6"
+        },
+        {
+            "key": "jitte",
+            "damage": "1d5"
+        },
+        {
+            "key": "jo",
+            "damage": "1d6"
+        },
+        {
+            "key": "kama",
+            "damage": "1d6"
+        },
+        {
+            "key": "katana",
+            "damage": "1d6+2"
+        },
+        {
+            "key": "kawaNaga",
+            "name": "Kawa-naga",
+            "damage": "1d3"
+        },
+        {
+            "key": "kiseru",
+            "damage": "1d6+1"
+        },
+        {
+            "key": "kusariGama",
+            "name": "Kusari-gama",
+            "damage": "1d6, 1d5"
+        },
+        {
+            "key": "kyotetsuShoge",
+            "name": "Kyotetsu-shoge",
+            "damage": "1d5"
+        },
+        {
+            "key": "manrikigusari",
+            "damage": "1d5"
+        },
+        {
+            "key": "masakari",
+            "damage": "1d6"
+        },
+        {
+            "key": "nagamaki",
+            "damage": "1d6+2"
+        },
+        {
+            "key": "naginata",
+            "damage": "2d6"
+        },
+        {
+            "key": "nekode",
+            "damage": "3"
+        },
+        {
+            "key": "noDachi",
+            "damage": "2d6"
+        },
+        {
+            "key": "nunchaku",
+            "damage": "1d6"
+        },
+        {
+            "key": "ono",
+            "damage": "2d6"
+        },
+        {
+            "key": "rock",
+            "damage": "1"
+        },
+        {
+            "key": "sai",
+            "damage": "1d5"
+        },
+        {
+            "key": "sasumata",
+            "damage": "1d3"
+        },
+        {
+            "key": "shuko",
+            "damage": "2"
+        },
+        {
+            "key": "shuriken",
+            "damage": "1d6"
+        },
+        {
+            "key": "sodegarami",
+            "damage": "1d6"
+        },
+        {
+            "key": "tanto",
+            "damage": "1d5"
+        },
+        {
+            "key": "tessen",
+            "damage": "1d5"
+        },
+        {
+            "key": "tetsubo",
+            "damage": "2d6"
+        },
+        {
+            "key": "tonfa",
+            "damage": "1d6"
+        },
+        {
+            "key": "uchiNe",
+            "name": "Uchi-ne",
+            "damage": "1d3"
+        },
+        {
+            "key": "wakizashi",
+            "damage": "1d6"
+        },
+        {
+            "key": "yari",
+            "damage": "1d10"
+        },
+        {
+            "key": "yariNage",
+            "name": "Yari-nage",
+            "damage": "1d6"
+        },
+        {
+            "key": "yawara",
+            "damage": "2"
+        },
+        {
+            "key": "daiKyu",
+            "name": "Dai-kyu"
+        },
+        {
+            "key": "hanKyu",
+            "name": "Han-kyu"
+        },
+        {
+            "key": "yanagiBa",
+            "name": "Yanagi-ba"
+        },
+        {
+            "key": "togariYa",
+            "name": "Togari-ya"
+        },
+        {
+            "key": "hikiMe",
+            "name": "Hiki-me"
+        }
     ],
     "initialItems": {
         "Bushi": [

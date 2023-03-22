@@ -3,7 +3,7 @@
 .NpcSheet {
   color: white;
   display: grid;
-  grid-template-columns: auto auto auto auto auto auto;
+  grid-template-columns: repeat(6, 1fr);
 
   h4 {
     margin: 0.5rem 0;

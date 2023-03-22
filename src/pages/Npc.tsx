@@ -6,9 +6,10 @@ import './Npc.scss'
 
 interface StatProps {
   name: string
-  value: string | number
   alt?: boolean
   style?: any
+  value?: string | number
+  children?: React.ReactNode
 }
 
 function Stat(props: StatProps) {
@@ -17,15 +18,46 @@ function Stat(props: StatProps) {
   return (
     <div className={className} style={props.style}>
       <h4>{name}</h4>
-      <span className='Stat'>{value}</span>
+      {
+        props.children ?
+        props.children
+        : <div className='Stat'>{value}</div>
+      }
     </div>
   )
+}
+
+type Weapon = {
+  key: string
+  name: string
+  damage: string
+}
+
+function getWeapons(npc: Npc): Weapon[] {
+  const inventory = npc.inventoryList()
+  const weapons = []
+  for (const item of inventory) {
+    if (item.damage) {
+      weapons.push(item)
+    }
+  }
+  return weapons
 }
 
 export default function NpcPage() {
   const { id } = useParams()
   const npc: Npc = new Npc()
   Object.assign(npc, JSON.parse(localStorage.getItem(`npc:${id}`)))
+
+  const weapons = getWeapons(npc)
+  function weaponRaw(weapon: Weapon | undefined): React.ReactNode {
+    if (!weapon) {
+      return <Stat name='Weap raw' alt />
+    } else {
+      return <Stat name={`Weap raw (${weapon.name})`} value={weapon.damage} />
+    }
+  }
+
   return (
     <div className='NpcSheet'>
       <Stat name='Level' value={npc.level} />
@@ -50,11 +82,11 @@ export default function NpcPage() {
       <Stat name='AC' value='' />
       <Stat name='Zanshin' value='' alt />
 
-      <Stat name='Weap raw' value='' alt />
+      {weaponRaw(weapons[0])}
       <Stat name='Dam' value='' />
-      <Stat name='Weap raw' value='' alt />
+      {weaponRaw(weapons[1])}
       <Stat name='Dam' value='' />
-      <Stat name='Weap raw' value='' alt />
+      {weaponRaw(weapons[2])}
       <Stat name='Dam' value='' style={{ marginBottom: '0.5rem' }} />
 
       <Stat name='Strength' value={npc.strength} />

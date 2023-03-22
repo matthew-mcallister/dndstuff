@@ -12,14 +12,17 @@ function skillToBcs(skill: number): number {
 
 // Converts a "camelCase" string to a "Title Case" string (with spaces)
 function keyToName(key: string): string {
+  key = key.replace(/[A-Z]/g, c => ' ' + c)
   key = key.charAt(0).toUpperCase() + key.substring(1)
-  return key.replace(/[A-Z]/g, c => ' ' + c)
+  return key
 }
 
-function lookupItem(name: string): InventoryItem {
-  let item = tables.items[name]
+function lookupItem(key: string): InventoryItem {
+  let item: any = tables.items.find((item) => item.key === key)
   if (!item) {
-    item = { key: name }
+    item = { key }
+  } else {
+    item = {...item}
   }
 
   if (!item.name) {
@@ -42,6 +45,7 @@ export interface InventoryItem {
   key: string
   name: string
   quantity: number
+  damage?: string
 }
 
 export default class Npc {
@@ -90,7 +94,7 @@ export default class Npc {
   }
 
   // TODO: Sort alphabetically and hide x1
-  private inventoryList(): InventoryItem[] {
+  public inventoryList(): InventoryItem[] {
     return Array.from(Object.entries(this.inventory)).map(([k, v]) => {
       const item = lookupItem(k)
       item.quantity = v
