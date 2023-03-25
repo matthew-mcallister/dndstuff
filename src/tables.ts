@@ -8,27 +8,34 @@ export interface Skill {
 
 export type Attitude = [string, number]
 
+export type DieTable = number | string | (string | string)[]
+
 export interface StatTable {
   strength: number
+  strengthDie: DieTable
   deftness: number
+  deftnessDie: DieTable
   speed: number
+  speedDie: DieTable
   health: number
+  healthDie: DieTable
   wit: number
+  witDie: DieTable
   will: number
-  hitpoints: number
-  hitpointDie: number
+  willDie: DieTable
+  hitpointDie: DieTable
   brawling: number
-  brawlingDie?: number
+  brawlingDie?: DieTable
   climbing: number
-  climbingDie?: number
+  climbingDie?: DieTable
   leaping: number
-  leapingDie?: number
+  leapingDie?: DieTable
   swimming: number
-  swimmingDie?: number
+  swimmingDie?: DieTable
   magic?: number
-  magicDie?: number
+  magicDie?: DieTable
   power?: number
-  powerDie?: number
+  powerDie?: DieTable
 }
 
 export interface SkillChoiceDef {
@@ -67,6 +74,7 @@ interface Tables {
     bugeiWeapons: { [key: string]: string[] }
 }
 
+// TODO: Switch to Dhall or a comparably powerful configuration language.
 // @ts-ignore
 const tables: Tables = _tables
 

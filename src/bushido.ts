@@ -1,17 +1,54 @@
 import { D20, d20, d } from './common'
-import tables, { InventoryChoiceDef } from './tables'
+import tables, { DieTable, InventoryChoiceDef } from './tables'
 import Npc from './Npc'
 
 export type Inventory = Map<string, number>
 
-function calculateStat(base: number, die: number, level: number): number {
-  if (die === 0) {
-    return base
-  } else if (die === 1) {
-    return base + level
-  } else {
-    return base + d(die, level)
+/**
+ * Rolls a die any number of times and returns the sum of rolls.
+ *
+ * The die format is `XdY[+-]C`. C defaults to 0 if omitted, while X
+ * defaults to 1. If the die is a plain number Y, it is interpreted as
+ * `1dY`.
+ *
+ * If count is > 1, the die will be rolled as many times as specified,
+ * including if X > 1 to begin with. For example, if you roll a
+ * 2d6+1 twice, it is the same as rolling 4d6+2 once.
+ */
+function rollDie(dieSpec: string | number, count: number = 1): number {
+  let die = typeof dieSpec === 'number' ? '1d' + dieSpec : dieSpec
+  if (die[0] === 'd') {
+    die = '1' + die
   }
+
+  let match = die.match(/([0-9]+)d([0-9])+([+-][0-9]+)?/)
+  if (match === null) {
+    throw new Error('Invalid die: ' + dieSpec)
+  }
+
+  let [n, r, c] = match.slice(1).map(Number)
+  c = c || 0
+  let res = d(r, count * n) + count * c
+  console.log(dieSpec, count, n, r, c, res)
+  return res
+}
+
+function rollDice(dieTable: DieTable, level: number): number {
+  if (Array.isArray(dieTable)) {
+    let v = 0
+    for (let i = 0; i < level; i++) {
+      let die = dieTable[Math.min(i, dieTable.length - 1)]
+      v += rollDie(die)
+    }
+    return v
+  } else {
+    // table is string or number
+    return rollDie(dieTable, level)
+  }
+}
+
+function calculateStat(base: number, dieTable: DieTable, level: number) {
+  return Math.min(base + rollDice(dieTable, level), 40)
 }
 
 function parseQuantity(qty: number | string): number {
@@ -83,20 +120,20 @@ export class BushidoHuman {
   public generateAttributes(tableName: string): void {
     const table = tables.stats[tableName]
 
-    this.strength = table.strength
-    this.deftness = table.deftness
-    this.speed = table.speed
-    this.health = table.health
-    this.wit = table.wit
-    this.will = table.will
+    this.strength = calculateStat(table.strength, table.strengthDie || 0, this.level)
+    this.deftness = calculateStat(table.deftness, table.deftnessDie || 0, this.level)
+    this.speed = calculateStat(table.speed, table.speedDie || 0, this.level)
+    this.health = calculateStat(table.health, table.healthDie || 0, this.level)
+    this.wit = calculateStat(table.wit, table.witDie || 0, this.level)
+    this.will = calculateStat(table.will, table.willDie || 0, this.level)
 
-    this.hitpoints = calculateStat(table.hitpoints, table.hitpointDie || 0, this.level)
-    this.brawling = calculateStat(table.brawling, table.brawlingDie || 0, this.level)
-    this.climbing = calculateStat(table.climbing, table.climbingDie || 0, this.level)
-    this.leaping = calculateStat(table.leaping, table.leapingDie || 0, this.level)
-    this.swimming = calculateStat(table.swimming, table.swimmingDie || 0, this.level)
-    this.magic = calculateStat(table.magic || 0, table.magicDie || 0, this.level)
-    this.power = calculateStat(table.power || 0, table.powerDie || 0, this.level)
+    this.hitpoints = table.health + rollDice(table.hitpointDie || 0, this.level)
+    this.brawling = table.brawling + rollDice(table.brawlingDie || 0, this.level)
+    this.climbing = table.climbing + rollDice(table.climbingDie || 0, this.level)
+    this.leaping = table.leaping + rollDice(table.leapingDie || 0, this.level)
+    this.swimming = table.swimming + rollDice(table.swimmingDie || 0, this.level)
+    this.magic = (table.magic || 0) + rollDice(table.magicDie || 0, this.level)
+    this.power = (table.power || 0) + rollDice(table.powerDie || 0, this.level)
 
     this.maxNumberActions = Math.floor(this.speed / 10)
     this.baseActionPhase = Math.floor(this.deftness / 2)
