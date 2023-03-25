@@ -18,11 +18,7 @@ function Stat(props: StatProps) {
   return (
     <div className={className} style={props.style}>
       <h4>{name}</h4>
-      {
-        props.children ?
-        props.children
-        : <div className='Stat'>{value}</div>
-      }
+      {props.children ? props.children : <div className='Stat'>{value}</div>}
     </div>
   )
 }
@@ -54,7 +50,9 @@ export default function NpcPage() {
     if (!weapon) {
       return <Stat name='Weap raw' alt />
     } else {
-      return <Stat name={`Weap raw (${weapon.name})`} value={weapon.damage} />
+      return (
+        <Stat name={`Weap raw (${weapon.name})`} value={weapon.damage} alt />
+      )
     }
   }
 
