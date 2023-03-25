@@ -1,4 +1,4 @@
-import { Route, HashRouter as Router, Routes } from 'react-router-dom'
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import App from './pages/App'
 import NpcPage from './pages/Npc'
 import React from 'react'

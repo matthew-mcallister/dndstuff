@@ -106,7 +106,7 @@ export default function App() {
                 onClose={() => deleteNpc(i)}
                 onExpand={() => {
                   const id = npcId.split(':')[1]
-                  window.open(`#/npcs/${id}`, '_blank')
+                  window.open(`npcs/${id}`, '_blank')
                 }}
                 npcId={npcId}
               />
