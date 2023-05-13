@@ -23,15 +23,42 @@ function Stat(props: StatProps) {
   )
 }
 
-type Weapon = InventoryItem
+interface Weapon extends InventoryItem {
+  rawDamage: string
+  damage: string
+}
 
 function getWeapons(npc: Npc): Weapon[] {
   const inventory = npc.inventoryList()
   const weapons = []
-  for (const item of inventory) {
-    if (item.damage) {
-      weapons.push(item)
+  for (let item of inventory) {
+    if (!item.damage) {
+      continue
     }
+
+    const weap: any = { ...item }
+    weap.rawDamage = weap.damage
+    let [n, r, c] = [0, 0, 0]
+    const match = weap.damage.match(/([0-9]+)d([0-9]+)([+-][0-9]+)?/)
+    if (match !== null) {
+      ;[n, r, c] = match.slice(1).map(Number)
+      c = c || 0
+    } else {
+      c = Number(weap.damage)
+    }
+
+    c = c + Number(item.quality?.bonus || 0) + npc.damageBonus
+
+    if (n && r) {
+      weap.damage = `${n}d${r}`
+      if (c) {
+        weap.damage += `+${c}`
+      }
+    } else {
+      weap.damage = String(c)
+    }
+
+    weapons.push(weap)
   }
   return weapons
 }
@@ -42,12 +69,31 @@ export default function NpcPage() {
   Object.assign(npc, JSON.parse(localStorage.getItem(`npc:${id}`)))
 
   const weapons = getWeapons(npc)
-  function weaponRaw(weapon: Weapon | undefined): React.ReactNode {
+  function weaponDamage(
+    weapon: Weapon | undefined,
+    style?: any
+  ): React.ReactNode {
     if (!weapon) {
-      return <Stat name='Weap raw' alt />
+      return (
+        <>
+          <Stat name='Weap raw' alt />
+          <Stat name='Dam' value='' style={style} />
+        </>
+      )
     } else {
       return (
-        <Stat name={`Weap raw: ${weapon.name}`} value={weapon.damage} alt />
+        <>
+          <Stat
+            name={`Weap raw: ${weapon.name}`}
+            value={weapon.rawDamage}
+            alt
+          />
+          <Stat
+            name={`Dam: ${weapon.name}`}
+            value={weapon.damage}
+            style={style}
+          />
+        </>
       )
     }
   }
@@ -76,12 +122,9 @@ export default function NpcPage() {
       <Stat name='AC' value='' />
       <Stat name='Zanshin' value='' alt />
 
-      {weaponRaw(weapons[0])}
-      <Stat name='Dam' value='' />
-      {weaponRaw(weapons[1])}
-      <Stat name='Dam' value='' />
-      {weaponRaw(weapons[2])}
-      <Stat name='Dam' value='' style={{ marginBottom: '0.5rem' }} />
+      {weaponDamage(weapons[0])}
+      {weaponDamage(weapons[1])}
+      {weaponDamage(weapons[2], { marginBottom: '0.5rem' })}
 
       <Stat name='Strength' value={npc.strength} />
       <Stat name='Deftness' value={npc.deftness} alt />

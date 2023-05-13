@@ -37,27 +37,15 @@ export function lookupItem(key: string): InventoryItem {
 
   item.quantity = 0
 
-  if (quality && item.damage) {
+  if (quality) {
     const q = tables.weaponQualities.find((q) => q.abbreviation === quality)
     if (q) {
       item.quality = q
     }
   }
 
-  // TODO: This calculation belongs elsewhere
   if (item.quality) {
-    const match = item.damage.match(/([0-9]+)d([0-9]+)([+-][0-9]+)?/)
-    if (match !== null) {
-      let [n, r, c] = match.slice(1).map(Number)
-      c = (c || 0) + item.quality.bonus
-      item.damage = `${n}d${r}`
-      if (c) {
-        item.damage += `+${c}`
-      }
-    } else {
-      const c = Number(item.damage)
-      item.damage = c + item.quality.bonus
-    }
+    // TODO: this should be a method and shouldn't overwrite the raw value
     item.name = `${item.name} (${item.quality.abbreviation})`
   }
 
@@ -112,6 +100,8 @@ export default class Npc {
   secondaryActionPhase1: number = 0
   secondaryActionPhase2: number = 0
   baseMovementAllowance: number = 0
+
+  damageBonus: number = 0
 
   skills: { [key: string]: number } = {}
   inventory: { [key: string]: number } = {}

@@ -93,6 +93,8 @@ export class BushidoHuman {
   secondaryActionPhase2: number = 0
   baseMovementAllowance: number = 0
 
+  damageBonus: number = 0
+
   // TODO: Rename with underscores to avoid Npc field name conflict
   initialSkills: Set<string> = new Set()
   skills: Map<string, number> = new Map()
@@ -144,6 +146,12 @@ export class BushidoHuman {
       this.secondaryActionPhase2 = Math.floor(this.baseActionPhase / 3)
     }
     this.baseMovementAllowance = Math.floor(this.speed / 3)
+
+    if (this.strength < 10) {
+      this.damageBonus = Math.floor((this.strength - 10 + 2) / 3)
+    } else {
+      this.damageBonus = Math.floor((this.strength - 10) / 5)
+    }
   }
 
   private generateInitialSkillValues(): Map<string, number> {
