@@ -488,5 +488,32 @@
         "tessenjutsu": ["tessen"],
         "tonfaTe": ["tonfa"],
         "yariNageJutsu": ["uchiNe", "yariNage"]
-    }
+    },
+    "weaponQualities": [
+        {
+            "name": "inferior",
+            "abbreviation": "I",
+            "bonus": -1
+        },
+        {
+            "name": "average",
+            "abbreviation": "A",
+            "bonus": 0
+        },
+        {
+            "name": "good",
+            "abbreviation": "G",
+            "bonus": 1
+        },
+        {
+            "name": "superior",
+            "abbreviation": "S",
+            "bonus": 2
+        },
+        {
+            "name": "master",
+            "abbreviation": "M",
+            "bonus": 3
+        }
+    ]
 }

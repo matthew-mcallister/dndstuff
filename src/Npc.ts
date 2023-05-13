@@ -17,7 +17,13 @@ function keyToName(key: string): string {
   return key
 }
 
-function lookupItem(key: string): InventoryItem {
+export function lookupItem(key: string): InventoryItem {
+  // TODO: Make item modifiers more generalized
+  let quality = null
+  if (key.includes('/')) {
+    [key, quality] = key.split('/')
+  }
+
   let item: any = tables.items.find((item) => item.key === key)
   if (!item) {
     item = { key }
@@ -30,6 +36,30 @@ function lookupItem(key: string): InventoryItem {
   }
 
   item.quantity = 0
+
+  if (quality && item.damage) {
+    const q = tables.weaponQualities.find((q) => q.abbreviation === quality)
+    if (q) {
+      item.quality = q
+    }
+  }
+
+  // TODO: This calculation belongs elsewhere
+  if (item.quality) {
+    const match = item.damage.match(/([0-9]+)d([0-9]+)([+-][0-9]+)?/)
+    if (match !== null) {
+      let [n, r, c] = match.slice(1).map(Number)
+      c = (c || 0) + item.quality.bonus
+      item.damage = `${n}d${r}`
+      if (c) {
+        item.damage += `+${c}`
+      }
+    } else {
+      const c = Number(item.damage)
+      item.damage = c + item.quality.bonus
+    }
+    item.name = `${item.name} (${item.quality.abbreviation})`
+  }
 
   return item
 }
@@ -46,6 +76,11 @@ export interface InventoryItem {
   name: string
   quantity: number
   damage?: string
+  quality?: {
+    name: string
+    abbreviation: string
+    bonus: number
+  }
 }
 
 export default class Npc {

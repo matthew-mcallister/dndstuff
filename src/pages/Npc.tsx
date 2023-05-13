@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 
-import Npc from '../Npc'
+import Npc, { InventoryItem } from '../Npc'
 import './Npc.scss'
 
 interface StatProps {
@@ -23,11 +23,7 @@ function Stat(props: StatProps) {
   )
 }
 
-type Weapon = {
-  key: string
-  name: string
-  damage: string
-}
+type Weapon = InventoryItem
 
 function getWeapons(npc: Npc): Weapon[] {
   const inventory = npc.inventoryList()
@@ -51,7 +47,7 @@ export default function NpcPage() {
       return <Stat name='Weap raw' alt />
     } else {
       return (
-        <Stat name={`Weap raw (${weapon.name})`} value={weapon.damage} alt />
+        <Stat name={`Weap raw: ${weapon.name}`} value={weapon.damage} alt />
       )
     }
   }

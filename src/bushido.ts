@@ -1,6 +1,6 @@
 import { D20, d20, d } from './common'
 import tables, { DieTable, InventoryChoiceDef } from './tables'
-import Npc from './Npc'
+import Npc, { lookupItem } from './Npc'
 
 export type Inventory = Map<string, number>
 
@@ -241,6 +241,11 @@ export class BushidoHuman {
       key = choices[0]
     } else {
       return
+    }
+
+    if (lookupItem(key).damage) {
+      const quality = tables.weaponQualities[Math.floor(Math.random() * tables.weaponQualities.length)]
+      key += '/' + quality.abbreviation
     }
 
     this.addItems(key, quantity, def.maxQuantity)

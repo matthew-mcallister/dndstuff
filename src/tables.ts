@@ -1,9 +1,9 @@
 import _tables from './tables.json'
 
 export interface Skill {
-    name: string
-    key: string
-    initialValue: string[]
+  name: string
+  key: string
+  initialValue: string[]
 }
 
 export type Attitude = [string, number]
@@ -63,15 +63,22 @@ export interface InventoryChoiceDef {
   dedupe?: boolean
 }
 
+export interface WeaponQuality {
+  name: string
+  abbreviation: string
+  bonus: number
+}
+
 interface Tables {
-    skills: Skill[]
-    skillSets: { [key: string]: string[] }
-    attitudes: Attitude[]
-    stats: { [key: string]: StatTable }
-    initialSkills: { [key: string]: SkillChoiceDef[] }
-    items: ItemDef[]
-    initialItems: InventoryChoiceDef[]
-    bugeiWeapons: { [key: string]: string[] }
+  skills: Skill[]
+  skillSets: { [key: string]: string[] }
+  attitudes: Attitude[]
+  stats: { [key: string]: StatTable }
+  initialSkills: { [key: string]: SkillChoiceDef[] }
+  items: ItemDef[]
+  initialItems: InventoryChoiceDef[]
+  bugeiWeapons: { [key: string]: string[] }
+  weaponQualities: WeaponQuality[]
 }
 
 // TODO: Switch to Dhall or a comparably powerful configuration language.
