@@ -1,5 +1,5 @@
 import { D20, d20, d } from './common'
-import tables, { DieTable, InventoryChoiceDef } from './tables'
+import tables, { DieTable, InventoryChoiceDef, SkillRange } from './tables'
 import Npc, { lookupItem } from './Npc'
 
 export type Inventory = Map<string, number>
@@ -29,7 +29,6 @@ function rollDie(dieSpec: string | number, count: number = 1): number {
   let [n, r, c] = match.slice(1).map(Number)
   c = c || 0
   let res = d(r, count * n) + count * c
-  console.log(dieSpec, count, n, r, c, res)
   return res
 }
 
@@ -59,6 +58,7 @@ function parseQuantity(qty: number | string): number {
     return qty
   }
 }
+
 
 // TODO: Inherit from Npc class
 export class BushidoHuman {
@@ -96,7 +96,6 @@ export class BushidoHuman {
   damageBonus: number = 0
 
   // TODO: Rename with underscores to avoid Npc field name conflict
-  initialSkills: Set<string> = new Set()
   skills: Map<string, number> = new Map()
   inventory: Inventory = new Map()
 
@@ -154,47 +153,64 @@ export class BushidoHuman {
     }
   }
 
-  private generateInitialSkillValues(): Map<string, number> {
-    const values = new Map()
-    for (const skill of tables.skills) {
-      let value = 0
-      for (const key of skill.initialValue) {
-        value += this[key]
-      }
-      values.set(skill.key, value)
+  private getInitialSkillValue(key: string) {
+    const skill = tables.skills.find(skill => skill.key === key)
+    if (!skill) {
+      throw new Error(`no such skill: ${skill}`)
     }
-    return values
+    let level = 0
+    for (const key of skill.initialValue) {
+      level += this[key]
+    }
+    return level
   }
 
-  private generateInitialSkills(tableName: string): void {
-    const initialSkills = this.initialSkills
-
-    function select(choices: string[]) {
-      choices = choices.filter(choice => !initialSkills.has(choice))
-      if (!choices.length) return
-      const i = Math.floor(Math.random() * choices.length)
-      const skill = Array.from(choices)[i]
-      initialSkills.add(skill)
+  private rollSkill(key: string, level?: SkillRange): number {
+    if (!level) {
+      level = this.getInitialSkillValue(key)
     }
 
-    for (const def of tables.initialSkills[tableName]) {
+    if (typeof level === 'number') {
+      return level
+    } else {
+      const [min, max] = level
+      const roll = Math.floor(Math.random() * (max - min) + min)
+      return roll
+    }
+  }
+
+  private generateSkills(tableName: string): void {
+    const skills = this.skills
+
+    function select(choices: string[]): string | null {
+      choices = choices.filter(choice => !skills.has(choice))
+      if (!choices.length) return null
+      const i = Math.floor(Math.random() * choices.length)
+      return Array.from(choices)[i]
+    }
+
+    let rulesByLevel = tables.initialSkills[tableName]
+    let rules = rulesByLevel[Math.min(this.level - 1, rulesByLevel.length)]
+    for (const def of rules) {
+      let choices = []
       if (def.key) {
-        select([def.key])
+        choices = [def.key]
       } else if (def.oneOf) {
-        select(def.oneOf)
+        choices = def.oneOf
       } else if (def.fromSet) {
-        select(tables.skillSets[def.fromSet])
+        choices = tables.skillSets[def.fromSet]
       } else {
         throw new Error('invalid skill def: ' + def)
       }
-    }
-  }
 
-  private generateSkills(): void {
-    const values = this.generateInitialSkillValues()
-    this.initialSkills.forEach(skill => {
-      this.skills.set(skill, values.get(skill))
-    })
+      const skill = select(choices)
+      if (!skill) {
+        continue
+      }
+
+      const level = this.rollSkill(skill, def.level)
+      this.skills.set(skill, level)
+    }
   }
 
   private applyItemSpecial(def: InventoryChoiceDef): InventoryChoiceDef[] {
@@ -204,7 +220,7 @@ export class BushidoHuman {
     if (def.special === 'bugeiWeapons') {
       let defs = []
       for (const bugei of tables.skillSets['bugei']) {
-        if (!this.initialSkills.has(bugei)) {
+        if (!this.skills.has(bugei)) {
           continue
         }
         let weapon = tables.bugeiWeapons[bugei]
@@ -274,8 +290,7 @@ export class BushidoHuman {
   ): void {
     this.generateAttitude()
     this.generateAttributes(stats)
-    this.generateInitialSkills(initialSkills)
-    this.generateSkills()
+    this.generateSkills(initialSkills)
     if (typeof items === 'string') {
       this.generateInventory(items)
     } else if (items instanceof Array) {

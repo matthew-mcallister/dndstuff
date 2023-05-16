@@ -1,5 +1,15 @@
 {
     "skills": [
+        { "name": "Karma-yoga", "key": "karmaYoga", "initialValue": ["wit"] },
+        { "name": "Gnana-yoga", "key": "gnanaYoga", "initialValue": ["wit"] },
+        { "name": "Hatha-yoga", "key": "hathaYoga", "initialValue": ["wit"] },
+        { "name": "Prana-yoga", "key": "pranaYoga", "initialValue": ["wit"] },
+        { "name": "Raja-yoga", "key": "rajaYoga", "initialValue": ["wit"] },
+        { "name": "School of fire", "key": "fireSchool", "initialValue": ["wit"] },
+        { "name": "School of water", "key": "waterSchool", "initialValue": ["wit"] },
+        { "name": "School of wood", "key": "woodSchool", "initialValue": ["wit"] },
+        { "name": "School of metal", "key": "metalSchool", "initialValue": ["wit"] },
+        { "name": "School of soil", "key": "soilSchool", "initialValue": ["wit"] },
         { "name": "Atemi-waza", "key": "atemiWaza", "initialValue": ["strength", "deftness", "will"] },
         { "name": "Bajutsu", "key": "bajutsu", "initialValue": ["will", "will"] },
         { "name": "Bojutsu", "key": "bojutsu", "initialValue": ["strength", "deftness", "will"] },
@@ -71,6 +81,20 @@
             "tonfaTe",
             "yadomejutsu",
             "yariNageJutsu"
+        ],
+        "yoga": [
+            "karmaYoga",
+            "gnanaYoga",
+            "hathaYoga",
+            "pranaYoga",
+            "rajaYoga"
+        ],
+        "school": [
+            "fireSchool",
+            "waterSchool",
+            "woodSchool",
+            "metalSchool",
+            "soilSchool"
         ]
     },
     "attitudes": [
@@ -230,31 +254,239 @@
     },
     "initialSkills": {
         "Bushi": [
-            { "key": "kenjutsu" },
-            { "key": "kyujutsu" },
-            { "fromSet": "bugei" },
-            { "fromSet": "bugei" }
+            [
+                { "key": "kenjutsu" },
+                { "key": "kyujutsu" },
+                { "fromSet": "bugei" },
+                { "fromSet": "bugei" }
+            ],
+            [
+                { "key": "kenjutsu", "level": [65, 75] },
+                { "key": "kyujutsu", "level": [55, 75] },
+                { "fromSet": "bugei", "level": [50, 70] },
+                { "fromSet": "bugei", "level": [50, 70] },
+                { "fromSet": "bugei", "level": [35, 55] }
+            ],
+            [
+                { "key": "kenjutsu", "level": [85, 100] },
+                { "key": "kyujutsu", "level": [60, 100] },
+                { "fromSet": "bugei", "level": [55, 95] },
+                { "fromSet": "bugei", "level": [55, 95] },
+                { "fromSet": "bugei", "level": [45, 75] },
+                { "fromSet": "bugei", "level": [35, 55] },
+                { "fromSet": "bugei", "level": [15, 25] }
+            ],
+            [
+                { "key": "kenjutsu", "level": 99 },
+                { "key": "kyujutsu", "level": 99 },
+                { "fromSet": "bugei", "level": [75, 100] },
+                { "fromSet": "bugei", "level": [75, 100] },
+                { "fromSet": "bugei", "level": [60, 100] },
+                { "fromSet": "bugei", "level": [45, 65] },
+                { "fromSet": "bugei", "level": [20, 45] }
+            ],
+            [
+                { "key": "kenjutsu", "level": 99 },
+                { "key": "kyujutsu", "level": 99 },
+                { "fromSet": "bugei", "level": 99 },
+                { "fromSet": "bugei", "level": 99 },
+                { "fromSet": "bugei", "level": [75, 100] },
+                { "fromSet": "bugei", "level": [75, 100] },
+                { "fromSet": "bugei", "level": [60, 100] },
+                { "fromSet": "bugei", "level": [45, 65] },
+                { "fromSet": "bugei", "level": [35, 60] },
+                { "fromSet": "bugei", "level": [20, 45] }
+            ]
         ],
         "Budoka": [
-            { "key": "atemiWaza" },
-            { "key": "jujutsu" },
-            { "fromSet": "bugei" }
+            [
+                { "key": "atemiWaza" },
+                { "key": "jujutsu" },
+                { "fromSet": "bugei" }
+            ],
+            [
+                { "key": "atemiWaza", "level": [65, 75] },
+                { "key": "jujutsu", "level": [55, 75] },
+                { "fromSet": "bugei", "level": [50, 70] },
+                { "fromSet": "bugei", "level": [35, 55] }
+            ],
+            [
+                { "key": "atemiWaza", "level": [85, 100] },
+                { "key": "jujutsu", "level": [60, 100] },
+                { "fromSet": "bugei", "level": [55, 95] },
+                { "fromSet": "bugei", "level": [45, 75] },
+                { "fromSet": "bugei", "level": [35, 55] },
+                { "fromSet": "bugei", "level": [15, 25] }
+            ],
+            [
+                { "key": "atemiWaza", "level": 99 },
+                { "key": "jujutsu", "level": 99 },
+                { "fromSet": "bugei", "level": [75, 100] },
+                { "fromSet": "bugei", "level": [60, 100] },
+                { "fromSet": "bugei", "level": [45, 65] },
+                { "fromSet": "bugei", "level": [20, 45] }
+            ],
+            [
+                { "key": "atemiWaza", "level": 99 },
+                { "key": "jujutsu", "level": 99 },
+                { "fromSet": "bugei", "level": 99 },
+                { "fromSet": "bugei", "level": [75, 100] },
+                { "fromSet": "bugei", "level": [60, 100] },
+                { "fromSet": "bugei", "level": [45, 65] },
+                { "fromSet": "bugei", "level": [35, 60] },
+                { "fromSet": "bugei", "level": [20, 45] }
+            ]
         ],
         "Gakusho": [
-            { "oneOf": ["bojutsu", "jujutsu"] }
+            [
+                { "oneOf": ["bojutsu", "jujutsu"] }
+            ],
+            [
+                { "fromSet": "yoga", "level": [65, 75] },
+                { "fromSet": "yoga", "level": [55, 75] },
+                { "oneOf": ["bojutsu", "jujutsu"], "level": [50, 70] }
+            ],
+            [
+                { "fromSet": "yoga", "level": [85, 100] },
+                { "fromSet": "yoga", "level": [60, 100] },
+                { "fromSet": "yoga", "level": [35, 55] },
+                { "fromSet": "yoga", "level": [15, 25] },
+                { "key": "bojutsu", "level": [55, 95] },
+                { "key": "jujutsu", "level": [45, 75] }
+            ],
+            [
+                { "fromSet": "yoga", "level": 99 },
+                { "fromSet": "yoga", "level": [75, 100] },
+                { "fromSet": "yoga", "level": [45, 65] },
+                { "fromSet": "yoga", "level": [20, 45] },
+                { "key": "bojutsu", "level": 99 },
+                { "key": "jujutsu", "level": [60, 100] }
+            ],
+            [
+                { "fromSet": "yoga", "level": 99 },
+                { "fromSet": "yoga", "level": 99 },
+                { "fromSet": "yoga", "level": [75, 100] },
+                { "fromSet": "yoga", "level": [45, 65] },
+                { "fromSet": "yoga", "level": [20, 45] },
+                { "key": "bojutsu", "level": 99 },
+                { "key": "jujutsu", "level": [60, 100] },
+                { "fromSet": "bugei", "level": [35, 60] }
+            ]
         ],
         "Shugenja": [
-            { "fromSet": "bugei" }
+            [
+                { "fromSet": "bugei" }
+            ],
+            [
+                { "fromSet": "school", "level": [65, 75] },
+                { "fromSet": "school", "level": [55, 75] },
+                { "fromSet": "bugei", "level": [50, 70] }
+            ],
+            [
+                { "fromSet": "school", "level": [85, 100] },
+                { "fromSet": "school", "level": [60, 100] },
+                { "fromSet": "school", "level": [35, 55] },
+                { "fromSet": "school", "level": [15, 25] },
+                { "fromSet": "bugei", "level": [55, 95] },
+                { "fromSet": "bugei", "level": [45, 75] }
+            ],
+            [
+                { "fromSet": "school", "level": 99 },
+                { "fromSet": "school", "level": [75, 100] },
+                { "fromSet": "school", "level": [45, 65] },
+                { "fromSet": "school", "level": [20, 45] },
+                { "fromSet": "bugei", "level": 99 },
+                { "fromSet": "bugei", "level": [60, 100] }
+            ],
+            [
+                { "fromSet": "school", "level": 99 },
+                { "fromSet": "school", "level": 99 },
+                { "fromSet": "school", "level": [75, 100] },
+                { "fromSet": "school", "level": [45, 65] },
+                { "fromSet": "school", "level": [20, 45] },
+                { "fromSet": "bugei", "level": 99 },
+                { "fromSet": "bugei", "level": [60, 100] },
+                { "fromSet": "bugei", "level": [35, 60] }
+            ]
         ],
         "Ninja": [
-            { "key": "kenjutsu" },
-            { "oneOf": ["atemiWaza", "jujutsu"] },
-            { "fromSet": "bugei" },
-            { "fromSet": "bugei" }
+            [
+                { "key": "kenjutsu" },
+                { "oneOf": ["atemiWaza", "jujutsu"] },
+                { "fromSet": "bugei" },
+                { "fromSet": "bugei" }
+            ],
+            [
+                { "key": "kenjutsu", "level": [65, 75] },
+                { "key": "atemiWaza", "level": [55, 75] },
+                { "key": "jujutsu", "level": [50, 70] },
+                { "fromSet": "bugei", "level": [50, 70] },
+                { "fromSet": "bugei", "level": [35, 55] }
+            ],
+            [
+                { "key": "kenjutsu", "level": [85, 100] },
+                { "key": "atemiWaza", "level": [60, 100] },
+                { "key": "jujutsu", "level": [55, 95] },
+                { "fromSet": "bugei", "level": [55, 95] },
+                { "fromSet": "bugei", "level": [45, 75] },
+                { "fromSet": "bugei", "level": [35, 55] },
+                { "fromSet": "bugei", "level": [15, 25] }
+            ],
+            [
+                { "key": "kenjutsu", "level": 99 },
+                { "key": "atemiWaza", "level": 99 },
+                { "key": "jujutsu", "level": [75, 100] },
+                { "fromSet": "bugei", "level": [75, 100] },
+                { "fromSet": "bugei", "level": [60, 100] },
+                { "fromSet": "bugei", "level": [45, 65] },
+                { "fromSet": "bugei", "level": [20, 45] }
+            ],
+            [
+                { "key": "kenjutsu", "level": 99 },
+                { "key": "atemiWaza", "level": 99 },
+                { "key": "jujutsu", "level": 99 },
+                { "fromSet": "bugei", "level": 99 },
+                { "fromSet": "bugei", "level": [75, 100] },
+                { "fromSet": "bugei", "level": [75, 100] },
+                { "fromSet": "bugei", "level": [60, 100] },
+                { "fromSet": "bugei", "level": [45, 65] },
+                { "fromSet": "bugei", "level": [35, 60] },
+                { "fromSet": "bugei", "level": [20, 45] }
+            ]
         ],
         "Yakuza": [
-            { "key": "sumai" },
-            { "fromSet": "bugei" }
+            [
+                { "key": "sumai" },
+                { "fromSet": "bugei" }
+            ],
+            [
+                { "key": "sumai", "level": [65, 75] },
+                { "fromSet": "bugei", "level": [55, 75] },
+                { "fromSet": "bugei", "level": [50, 70] }
+            ],
+            [
+                { "key": "sumai", "level": [85, 100] },
+                { "fromSet": "bugei", "level": [60, 100] },
+                { "fromSet": "bugei", "level": [55, 95] },
+                { "fromSet": "bugei", "level": [45, 75] },
+                { "fromSet": "bugei", "level": [35, 55] }
+            ],
+            [
+                { "key": "sumai", "level": 99 },
+                { "fromSet": "bugei", "level": 99 },
+                { "fromSet": "bugei", "level": [75, 100] },
+                { "fromSet": "bugei", "level": [60, 100] },
+                { "fromSet": "bugei", "level": [45, 65] }
+            ],
+            [
+                { "key": "sumai", "level": 99 },
+                { "fromSet": "bugei", "level": 99 },
+                { "fromSet": "bugei", "level": 99 },
+                { "fromSet": "bugei", "level": [75, 100] },
+                { "fromSet": "bugei", "level": [60, 100] },
+                { "fromSet": "bugei", "level": [45, 65] },
+                { "fromSet": "bugei", "level": [35, 60] }
+            ]
         ]
     },
     "items": [
@@ -446,7 +678,8 @@
         ],
         "Gakusho": [
             { "type": "clericalGarb" },
-            { "type": "bo" }
+            { "type": "bo" },
+            { "type": "bugeiWeapons" }
         ],
         "Shugenja": [
             { "special": "bugeiWeapons" },

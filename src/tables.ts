@@ -38,10 +38,13 @@ export interface StatTable {
   powerDie?: DieTable
 }
 
+export type SkillRange = number | [number, number]
+
 export interface SkillChoiceDef {
   key?: string
   oneOf?: string[]
   fromSet?: string
+  level?: SkillRange
 }
 
 export interface ItemDef {
@@ -74,7 +77,7 @@ interface Tables {
   skillSets: { [key: string]: string[] }
   attitudes: Attitude[]
   stats: { [key: string]: StatTable }
-  initialSkills: { [key: string]: SkillChoiceDef[] }
+  initialSkills: { [key: string]: SkillChoiceDef[][] }
   items: ItemDef[]
   initialItems: InventoryChoiceDef[]
   bugeiWeapons: { [key: string]: string[] }
