@@ -28,6 +28,39 @@ interface Weapon extends InventoryItem {
   damage: string
 }
 
+type DamageParams = [number, number, number]
+
+function parseDamage(damageSpec: string): DamageParams {
+  let [n, r, c] = [0, 0, 0]
+  const match = damageSpec.match(/([0-9]+)d([0-9]+)([+-][0-9]+)?/)
+  if (match !== null) {
+    ;[n, r, c] = match.slice(1).map(Number)
+    c = c || 0
+  } else {
+    c = Number(damageSpec)
+  }
+  return [n, r, c]
+}
+
+function formatDamage([n, r, c]: DamageParams): string {
+  let damage = ''
+  if (n && r) {
+    damage = `${n}d${r}`
+    if (c) {
+      damage += `+${c}`
+    }
+  } else {
+    damage = String(c)
+  }
+  return damage
+}
+
+function weaponDamage(npc: Npc, weapon: Weapon): DamageParams {
+  let [n, r, c] = parseDamage(weapon.damage)
+  c = c + Number(weapon.quality?.bonus || 0) + npc.damageBonus
+  return [n, r, c]
+}
+
 function getWeapons(npc: Npc): Weapon[] {
   const inventory = npc.inventoryList()
   const weapons = []
@@ -38,28 +71,21 @@ function getWeapons(npc: Npc): Weapon[] {
 
     const weap: any = { ...item }
     weap.rawDamage = weap.damage
-    let [n, r, c] = [0, 0, 0]
-    const match = weap.damage.match(/([0-9]+)d([0-9]+)([+-][0-9]+)?/)
-    if (match !== null) {
-      ;[n, r, c] = match.slice(1).map(Number)
-      c = c || 0
-    } else {
-      c = Number(weap.damage)
-    }
-
-    c = c + Number(item.quality?.bonus || 0) + npc.damageBonus
-
-    if (n && r) {
-      weap.damage = `${n}d${r}`
-      if (c) {
-        weap.damage += `+${c}`
-      }
-    } else {
-      weap.damage = String(c)
-    }
-
+    weap.damage = formatDamage(weaponDamage(npc, weap))
     weapons.push(weap)
   }
+
+  function averageDamage(weapon: Weapon): number {
+    const [n, r, c] = weaponDamage(npc, weapon)
+    if (!n || !r) {
+      return c
+    } else {
+      return (n * (r + 1)) / 2 + c
+    }
+  }
+
+  weapons.sort((w1, w2) => averageDamage(w2) - averageDamage(w1))
+
   return weapons
 }
 
